@@ -41,6 +41,16 @@ class Client(object):
         """
         if query_params is None:
             query_params = {}
+        query_params = self.__clean_query_params(query_params)
         query_params["access_token"] = self.access_token
         query_params = urllib.parse.urlencode(query_params)
         return url + "?" + query_params
+
+    @staticmethod
+    def __clean_query_params(query_params):
+        """
+
+        :param query_params:
+        :return:
+        """
+        return {key: value for key, value in query_params.items() if value is not None}

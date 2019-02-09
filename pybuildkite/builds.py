@@ -1,5 +1,4 @@
 import datetime
-import urllib
 from enum import Enum
 from pybuildkite.client import Client
 
@@ -15,6 +14,7 @@ class BuildState(Enum):
     SKIPPED = "skipped"
     NOT_RUN = "not_run"
     FINISHED = "finished"
+
 
 # TODO needed?
 class BuildQueryParams(Enum):
@@ -63,12 +63,11 @@ class Builds(Client):
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state,
+            "state": state.value if state is not None else state,
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit
         }
-        query_params = self.__clean_query_params(query_params)
         return self.client.get(self.path_for_all, query_params)
 
     def list_all_for_org(self, organization, creator=None, created_from=None, created_to=None, finished_from=None,
@@ -96,12 +95,11 @@ class Builds(Client):
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state.value,
+            "state": state.value if state is not None else state,
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit
         }
-        query_params = self.__clean_query_params(query_params)
         return self.client.get(self.path_by_org.format(organization), query_params)
 
     def list_all_for_pipeline(self, organization, pipeline, creator=None, created_from=None, created_to=None, finished_from=None,
@@ -130,26 +128,15 @@ class Builds(Client):
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state.value,
+            "state": state.value if state is not None else state,
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit
         }
-        query_params = self.__clean_query_params(query_params)
         return self.client.get(self.path_by_pipeline.format(organization, pipeline), query_params)
 
     def get_build_by_number(self, organization, pipeline, build_number):
         return self.client.get(self.path_for_build_number.format(organization, pipeline) + str(build_number))
-
-    @staticmethod
-    def __clean_query_params(query_params):
-        """
-
-        :param query_params:
-        :return:
-        """
-        return {key: value for key, value in query_params.items() if value is not None}
-
 
     @staticmethod
     def __validate_dates(datetimes):
