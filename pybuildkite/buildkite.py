@@ -2,6 +2,7 @@ from pybuildkite.client import Client
 from pybuildkite.organizations import Organizations
 from pybuildkite.pipelines import Pipelines
 from pybuildkite.builds import Builds, BuildState
+from pybuildkite.jobs import Jobs
 
 class BuildKite(object):
 
@@ -41,6 +42,10 @@ class BuildKite(object):
     @requires_token
     def builds(self):
         return Builds(self.client, self.base_url)
+
+    @requires_token
+    def jobs(self):
+        return Jobs(self.client, self.base_url)
 
 
 class NoAcccessTokenException(Exception):

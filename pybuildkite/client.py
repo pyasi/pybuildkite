@@ -20,13 +20,17 @@ class Client(object):
     def set_client_access_token(self, access_token):
         self.access_token = access_token
 
-    def get(self, url, query_params=None):
+    def get(self, url, query_params=None, headers=None):
 
         url = self.__create_url(url, query_params)
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
 
-        return response.text
+        # TODO what should be returned
+        if headers:
+            return response.text
+        else:
+            return response.json()
 
     def __create_url(self, url, query_params):
         """
@@ -35,6 +39,8 @@ class Client(object):
         :param query_params:
         :return:
         """
+        if query_params is None:
+            query_params = {}
         query_params["access_token"] = self.access_token
         query_params = urllib.parse.urlencode(query_params)
         return url + "?" + query_params
