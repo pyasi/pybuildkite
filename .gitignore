@@ -1,0 +1,6 @@
+test.py
+local.json
+venv/*
+venv3/*
+.idea/*
+*.pyc
