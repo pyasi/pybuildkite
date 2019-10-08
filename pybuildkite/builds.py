@@ -165,6 +165,27 @@ class Builds(Client):
         """
         return self.client.get(self.path_for_build_number.format(organization, pipeline) + str(build_number))
 
+    def create_build(self, organization, pipeline, commit, branch, author=None, clean_checkout=None, env=None, 
+                        ignore_pipeline_branch_filters=None, message=None, meta_data=None, pull_request_base_branch=None,
+                        pull_request_id=None, pull_request_repository=None):
+        """
+        """
+        body = {
+            "commit": commit,
+            "branch": branch,
+            "author": author,
+            "clean_checkout": clean_checkout,
+            "env": env,
+            "ignore_pipeline_branch_filters": ignore_pipeline_branch_filters,
+            "message": message,
+            "meta_data": meta_data,
+            "pull_request_base_branch": pull_request_base_branch,
+            "pull_request_id": pull_request_id,
+            "pull_request_repository": pull_request_repository,
+        }
+        return self.client.post(self.path_by_pipeline.format(organization, pipeline), body)
+
+
     @staticmethod
     def __validate_dates(datetimes):
         for date in datetimes:
