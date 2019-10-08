@@ -167,9 +167,7 @@ class Builds(Client):
 
     def create_build(self, organization, pipeline, commit, branch, author=None, clean_checkout=None, env=None, 
                         ignore_pipeline_branch_filters=None, message=None, meta_data=None, pull_request_base_branch=None,
-                        pull_request_id=None, pull_request_repository=None):
-        """
-        """
+                        pull_request_id=None, pull_request_repository=None):        
         body = {
             "commit": commit,
             "branch": branch,
