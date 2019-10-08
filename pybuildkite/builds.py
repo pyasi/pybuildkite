@@ -4,6 +4,11 @@ from pybuildkite.client import Client
 
 
 class BuildState(Enum):
+    """
+    Valid build states
+
+    The finished state is a shortcut to automatically search for builds with passed, failed, blocked, canceled states.
+    """
     RUNNING = "running"
     SCHEDULED = "scheduled"
     PASSED = "passed"
@@ -18,6 +23,9 @@ class BuildState(Enum):
 
 # TODO needed?
 class BuildQueryParams(Enum):
+    """
+    Query parameters for listing builds
+    """
     CREATOR = "creator"
     CREATED_FROM = "created_from"
     CREATED_TO = "created_to"
@@ -29,10 +37,15 @@ class BuildQueryParams(Enum):
 
 
 class Builds(Client):
-
+    """
+    Build operations for the Buildkite API
+    """
     def __init__(self, client, base_url):
         """
+        Construct the class
 
+        :param client: API Client
+        :param base_url: Base Url
         """
         self.client = client
         self.path_for_all = base_url + 'builds'
@@ -43,16 +56,19 @@ class Builds(Client):
     def list_all(self, creator=None, created_from=None, created_to=None, finished_from=None,
                  state=None, meta_data=None, branch=None, commit=None):
         """
+        Returns a paginated list of all builds across all the user’s organizations and pipelines. If using
+        token-based authentication the list of builds will be for the authorized organizations only. Builds are
+        listed in the order they were created (newest first).
 
-        :param creator:
-        :param created_from:
-        :param created_to:
-        :param finished_from:
-        :param state:
+        :param creator: Filters the results by the user who created the build
+        :param created_from: Filters the results by builds created on or after the given datetime.date
+        :param created_to: Filters the results by builds created before the given datetime.date
+        :param finished_from: Filters the results by builds finished on or after the given datetime.date
+        :param state: Filters the results by the given build state.
         :param meta_data: Filters the results by the given meta_data. Example: ?meta_data[some-key]=some-value
-        :param branch:
-        :param commit:
-        :return:
+        :param branch: Filters the results by the given branch or branches.
+        :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :return: Returns a paginated list of all builds across all the user’s organizations and pipelines
         """
         self.__validate_dates([created_from, created_to, finished_from])
         self.__is_valid_state(state)
@@ -73,17 +89,19 @@ class Builds(Client):
     def list_all_for_org(self, organization, creator=None, created_from=None, created_to=None, finished_from=None,
                          state=None, meta_data=None, branch=None, commit=None):
         """
+        Returns a paginated list of an organization’s builds across all of an organization’s pipelines. Builds are
+        listed in the order they were created (newest first).
 
-        :param organization:
-        :param creator:
-        :param created_from:
-        :param created_to:
-        :param finished_from:
-        :param state:
-        :param meta_data:
-        :param branch:
-        :param commit:
-        :return:
+        :param organization: Organization slug
+        :param creator: Filters the results by the user who created the build
+        :param created_from: Filters the results by builds created on or after the given datetime.date
+        :param created_to: Filters the results by builds created before the given datetime.date
+        :param finished_from: Filters the results by builds finished on or after the given datetime.date
+        :param state: Filters the results by the given build state.
+        :param meta_data: Filters the results by the given meta_data.
+        :param branch: Filters the results by the given branch or branches.
+        :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :return: Returns a paginated list of an organization’s builds across all of an organization’s pipelines.
         """
 
         #TODO dry this?
@@ -105,18 +123,20 @@ class Builds(Client):
     def list_all_for_pipeline(self, organization, pipeline, creator=None, created_from=None, created_to=None, finished_from=None,
                          state=None, meta_data=None, branch=None, commit=None):
         """
+        Returns a paginated list of a pipeline’s builds. Builds are listed in the order they were created (newest
+        first).
 
-        :param organization:
-        :param pipeline:
-        :param creator:
-        :param created_from:
-        :param created_to:
-        :param finished_from:
-        :param state:
-        :param meta_data:
-        :param branch:
-        :param commit:
-        :return:
+        :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :param creator: Filters the results by the user who created the build
+        :param created_from: Filters the results by builds created on or after the given datetime.date
+        :param created_to: Filters the results by builds created before the given datetime.date
+        :param finished_from: Filters the results by builds finished on or after the given datetime.date
+        :param state: Filters the results by the given build state.
+        :param meta_data: Filters the results by the given meta_data.
+        :param branch: Filters the results by the given branch or branches.
+        :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :return: Returns a paginated list of a pipeline’s builds.
         """
 
         #TODO dry this?
@@ -136,6 +156,13 @@ class Builds(Client):
         return self.client.get(self.path_by_pipeline.format(organization, pipeline), query_params)
 
     def get_build_by_number(self, organization, pipeline, build_number):
+        """
+
+        :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :param build_number: Build number
+        :return: A build
+        """
         return self.client.get(self.path_for_build_number.format(organization, pipeline) + str(build_number))
 
     @staticmethod
@@ -154,9 +181,15 @@ class Builds(Client):
 
 
 class NotValidDateTime(Exception):
+    """
+    Raised when date is not a valid datetime.date
+    """
     pass
 
 
 class NotValidBuildState(Exception):
+    """
+    Raised when state is not a valid BuildState
+    """
     pass
 
