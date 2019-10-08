@@ -1,22 +1,35 @@
 import pytest
-from pybuildkite.buildkite import BuildKite
+from pybuildkite.client import Client
 
 class TestClient:
     """
-    Test functionality of the cleint class
+    Test functionality of the client class
     """
 
-    @staticmethod
-    def setup_method():
-        print('setup')
-    @staticmethod
-    def teardown_method():
-        print('teardown')
-
-    def test_access_token_not_set(self):
+    def test_access_token_setting(self):
         """
-
-        :return:
+        Test functionality of is_acces_token_set
         """
-        buildkite = BuildKite()
-        buildkite.agents().get('FAKE-ORG')
+        client = Client()
+        assert not client.is_access_token_set()
+        client.set_client_access_token('FAKE-TOKEN')
+        assert client.is_access_token_set()
+
+    def test_clean_query_params(self):
+        """
+        Test that params with None are cleaned
+        """
+        original_query_params = {
+            "name": 'FAKE-NAME',
+            "hostname": 'FAKE-HOSTNAME',
+            "version": None
+        }
+
+        cleaned_query_params = {
+            "name": 'FAKE-NAME',
+            "hostname": 'FAKE-HOSTNAME'
+        }
+        
+        client = Client()
+        original_query_params = client._clean_query_params(original_query_params)
+        assert original_query_params == cleaned_query_params

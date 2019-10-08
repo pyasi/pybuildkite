@@ -22,7 +22,7 @@ class Client(object):
 
     def get(self, url, query_params=None, headers=None):
 
-        url = self.__create_url(url, query_params)
+        url = self._create_url(url, query_params)
         response = requests.get(url, headers=headers)
         response.raise_for_status()
 
@@ -32,7 +32,7 @@ class Client(object):
         else:
             return response.json()
 
-    def __create_url(self, url, query_params):
+    def _create_url(self, url, query_params):
         """
 
         :param url:
@@ -41,13 +41,13 @@ class Client(object):
         """
         if query_params is None:
             query_params = {}
-        query_params = self.__clean_query_params(query_params)
+        query_params = self._clean_query_params(query_params)
         query_params["access_token"] = self.access_token
         query_params = urllib.parse.urlencode(query_params)
         return url + "?" + query_params
 
     @staticmethod
-    def __clean_query_params(query_params):
+    def _clean_query_params(query_params):
         """
 
         :param query_params:
