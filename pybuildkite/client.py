@@ -3,25 +3,41 @@ import urllib
 
 
 class Client(object):
-
+    """
+    Internal API Client
+    """
     def __init__(self):
         """
-
+        Create class
         """
         self.access_token = ''
 
     def is_access_token_set(self):
         """
+        Has this client got an access token set in it
 
-        :return:
+        :return: true or false
         """
         return not self.access_token == ''
 
     def set_client_access_token(self, access_token):
+        """
+        Set an access token to use for API calls
+        :param access_token: The token
+        """
         self.access_token = access_token
 
     def get(self, url, query_params=None, headers=None):
+        """
+        Make a GET request to the API
 
+        The request will be authorised if the access token is set
+
+        :param url: URL to call
+        :param query_params: Query parameters to append to URL
+        :param headers: Dictionary of headers to use in HTTP request
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
         url = self._create_url(url, query_params)
         response = requests.get(url, headers=headers)
         response.raise_for_status()
