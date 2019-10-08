@@ -2,7 +2,7 @@ from pybuildkite.client import Client
 from pybuildkite.organizations import Organizations
 from pybuildkite.pipelines import Pipelines
 from pybuildkite.builds import Builds, BuildState
-from pybuildkite.jobs import Jobs
+from pybuildkite.jobs import Jobs, LogFormat
 from pybuildkite.agents import Agents
 from pybuildkite.emojis import Emojis
 from pybuildkite.annotations import Annotations
