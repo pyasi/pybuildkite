@@ -4,6 +4,7 @@ from pybuildkite.pipelines import Pipelines
 from pybuildkite.builds import Builds, BuildState
 from pybuildkite.jobs import Jobs
 from pybuildkite.agents import Agents
+from pybuildkite.annotations import Annotations
 
 class BuildKite(object):
 
@@ -52,6 +53,9 @@ class BuildKite(object):
     def agents(self):
         return Agents(self.client, self.base_url)
 
+    @requires_token
+    def annotations(self):
+        return Annotations(self.client, self.base_url)
 
 
 class NoAcccessTokenException(Exception):
