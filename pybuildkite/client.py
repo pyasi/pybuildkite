@@ -51,7 +51,7 @@ class Client(object):
     def post(self, url, body=None, headers=None):
         """
         Make a POST request to the API
-ex
+        
         The request will be authorised if the access token is set
 
         :param url: URL to call
