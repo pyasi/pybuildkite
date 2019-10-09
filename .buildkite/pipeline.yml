@@ -1,6 +1,7 @@
 steps:
-  - label: :python-black: Lint Black
+
+  - label: ":python-black: Lint Black"
     command: black --check .
 
-  - label: :pytest: Unit Tests
+  - label: ":pytest: Unit Tests"
     command: pytest
