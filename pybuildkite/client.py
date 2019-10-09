@@ -61,8 +61,36 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
         url = self._create_url(url, body)
-        body = self._clean_query_params(body)
+        if body is not None:
+            body = self._clean_query_params(body)
+        else:
+            body = {}
         response = requests.post(url, json=body, headers=headers)
+        response.raise_for_status()
+
+        # TODO what should be returned
+        if headers:
+            return response.text
+        else:
+            return response.json()
+
+    def put(self, url, body=None, headers=None):
+        """
+        Make a PUT request to the API
+        
+        The request will be authorised if the access token is set
+
+        :param url: URL to call
+        :param body: Body of the request
+        :param headers: Dictionary of headers to use in HTTP request
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
+        url = self._create_url(url, body)
+        if body is not None:
+            body = self._clean_query_params(body)
+        else:
+            body = {}
+        response = requests.put(url, json=body, headers=headers)
         response.raise_for_status()
 
         # TODO what should be returned

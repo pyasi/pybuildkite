@@ -54,7 +54,9 @@ class Builds(Client):
         self.path_for_all = base_url + "builds"
         self.path_by_org = base_url + "organizations/{}/builds"
         self.path_by_pipeline = base_url + "organizations/{}/pipelines/{}/builds"
-        self.path_for_build_number = base_url + "organizations/{}/pipelines/{}/builds/"
+        self.path_for_build_number = (
+            base_url + "organizations/{}/pipelines/{}/builds/{}"
+        )
 
     def list_all(
         self,
@@ -191,6 +193,7 @@ class Builds(Client):
 
     def get_build_by_number(self, organization, pipeline, build_number):
         """
+        Get build by build number
 
         :param organization: Organization slug
         :param pipeline: Pipeline slug
@@ -198,8 +201,7 @@ class Builds(Client):
         :return: A build
         """
         return self.client.get(
-            self.path_for_build_number.format(organization, pipeline)
-            + str(build_number)
+            self.path_for_build_number.format(organization, pipeline, build_number)
         )
 
     def create_build(
@@ -251,6 +253,20 @@ class Builds(Client):
         }
         return self.client.post(
             self.path_by_pipeline.format(organization, pipeline), body
+        )
+
+    def cancel_build(self, organization, pipeline, build_number):
+        cancel = "/cancel"
+        return self.client.put(
+            self.path_for_build_number.format(organization, pipeline, build_number)
+            + cancel
+        )
+
+    def rebuild_build(self, organization, pipeline, build_number):
+        rebuild = "/rebuild"
+        return self.client.put(
+            self.path_for_build_number.format(organization, pipeline, build_number)
+            + rebuild
         )
 
     @staticmethod
