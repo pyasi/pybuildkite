@@ -1,26 +1,25 @@
-from pybuildkite.client import Client
-from pybuildkite.organizations import Organizations
-from requests.exceptions import HTTPError
 import pytest
+from pybuildkite.organizations import Organizations
+from pybuildkite.client import Client
 
-class TestOrganization:
+
+@pytest.fixture()
+def setup_org(mocker):
+    mocker.patch('pybuildkite.client.Client.get', return_value='PASS')
     client = Client()
-    url = 'https://api.buildkite.com/v2/'
+    url = 'https://api.buildkite.com/v2'
+    org = Organizations(client, url)
+    yield org
 
-    def test_organization(self):
-        org = Organizations(self.client, self.url)
-        assert org.client == self.client
-        assert org.path == self.url + 'organizations/'
+def test_organization(setup_org):
+    assert setup_org.client == setup_org.client
+    assert setup_org.path == 'https://api.buildkite.com/v2'+ 'organizations/'
 
-    def test_list_all(self):
-        org = Organizations(self.client, self.url)
-        with pytest.raises(HTTPError) as e:
-            org.list_all()
-        assert "HTTPError" in str(e)
+def test_list_all(setup_org):
+    result = setup_org.list_all()
+    assert "PASS" in result
 
-    def test_get_org(self):
-        org = Organizations(self.client, self.url)
-        org_name = 'test'
-        with pytest.raises(HTTPError) as e:
-            org.get_org(org_name)
-        assert "HTTPError" in str(e)
+def test_get_org(setup_org):
+    org_name = 'test'
+    result = setup_org.get_org(org_name)
+    assert "PASS" in result
