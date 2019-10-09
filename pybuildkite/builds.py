@@ -51,7 +51,6 @@ class Builds(Client):
         :param base_url: Base Url
         """
         self.client = client
-
         self.path_for_all = base_url + "builds"
         self.path_by_org = base_url + "organizations/{}/builds"
         self.path_by_pipeline = base_url + "organizations/{}/pipelines/{}/builds"
@@ -204,7 +203,8 @@ class Builds(Client):
         )
 
     def create_build(
-        self,organization,
+        self,
+        organization,
         pipeline,
         commit,
         branch,
@@ -238,7 +238,6 @@ class Builds(Client):
         """
         body = {
             "commit": commit,
-
             "branch": branch,
             "author": author,
             "clean_checkout": clean_checkout,
@@ -255,7 +254,7 @@ class Builds(Client):
         )
 
     @staticmethod
-     def __validate_dates(datetimes):
+    def __validate_dates(datetimes):
         for date in datetimes:
             if date is not None:
                 if not isinstance(date, datetime.date):
@@ -265,7 +264,6 @@ class Builds(Client):
     def __is_valid_state(state):
         if state is None:
             return
-
         if not isinstance(state, BuildState):
             raise NotValidBuildState
 
