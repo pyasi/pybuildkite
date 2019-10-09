@@ -5,6 +5,7 @@ class Organizations(Client):
     """
     Organization operations for the Buildkite API
     """
+
     def __init__(self, client, base_url):
         """
         Construct the class
@@ -13,7 +14,7 @@ class Organizations(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + 'organizations/'
+        self.path = base_url + "organizations/"
 
     def list_all(self):
         """

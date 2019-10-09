@@ -6,11 +6,12 @@ class Client(object):
     """
     Internal API Client
     """
+
     def __init__(self):
         """
         Create class
         """
-        self.access_token = ''
+        self.access_token = ""
 
     def is_access_token_set(self):
         """
@@ -18,7 +19,7 @@ class Client(object):
 
         :return: true or false
         """
-        return not self.access_token == ''
+        return not self.access_token == ""
 
     def set_client_access_token(self, access_token):
         """
@@ -47,7 +48,7 @@ class Client(object):
             return response.text
         else:
             return response.json()
-    
+
     def post(self, url, body=None, headers=None):
         """
         Make a POST request to the API

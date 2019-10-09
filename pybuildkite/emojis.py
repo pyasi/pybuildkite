@@ -5,6 +5,7 @@ class Emojis(Client):
     """
     Emoji operations for the Buildkite API
     """
+
     def __init__(self, client, base_url):
         """
         Construct the class

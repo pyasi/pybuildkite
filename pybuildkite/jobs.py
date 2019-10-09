@@ -16,7 +16,9 @@ class Jobs(Client):
         self.client = client
         self.path = base_url + "/organizations/{}/pipelines/{}/builds/{}/jobs/{}/"
 
-    def get_job_log(self, organization, pipeline, build, job, get_text=False, get_html=False):
+    def get_job_log(
+        self, organization, pipeline, build, job, get_text=False, get_html=False
+    ):
         """
         Get a job’s log output
 
@@ -28,8 +30,10 @@ class Jobs(Client):
         :param get_html: Unused
         :return: Job log output
         """
-        header = {'Accept': 'text/html'}
-        return self.client.get(self.path.format(organization, pipeline, build, job) + "log", headers=header)
+        header = {"Accept": "text/html"}
+        return self.client.get(
+            self.path.format(organization, pipeline, build, job) + "log", headers=header
+        )
 
     def get_job_environment_variables(self, organization, pipeline, build, job):
         """
@@ -41,4 +45,6 @@ class Jobs(Client):
         :param job: Job id
         :return: Environment variables
         """
-        return self.client.get(self.path.format(organization, pipeline, build, job) + "env")
+        return self.client.get(
+            self.path.format(organization, pipeline, build, job) + "env"
+        )

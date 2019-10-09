@@ -12,6 +12,7 @@ class BuildKite(object):
     """
     Public API for Buildkite
     """
+
     def __init__(self):
         """
         Create a new client
@@ -119,4 +120,5 @@ class NoAcccessTokenException(Exception):
     """
     Indicates that an access token was not set when it was required
     """
+
     pass

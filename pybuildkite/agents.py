@@ -5,6 +5,7 @@ class Agents(Client):
     """
     Agent operations for the Buildkite API
     """
+
     def __init__(self, client, base_url):
         """
         Construct the class
@@ -13,7 +14,7 @@ class Agents(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + 'organizations/{}/agents/'
+        self.path = base_url + "organizations/{}/agents/"
 
     def list_all(self, organizations, name=None, hostname=None, version=None):
         """
@@ -25,11 +26,7 @@ class Agents(Client):
         :param version: Filters the results by the given exact version number
         :return: Returns a paginated list of an organization’s agents
         """
-        query_params = {
-            "name": name,
-            "hostname": hostname,
-            "version": version
-        }
+        query_params = {"name": name, "hostname": hostname, "version": version}
         return self.client.get(self.path.format(organizations), query_params)
 
     def get_agent(self, organization, agent_id):
