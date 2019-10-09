@@ -165,7 +165,7 @@ class Builds(Client):
         """
         return self.client.get(self.path_for_build_number.format(organization, pipeline) + str(build_number))
 
-        def create_build(self, organization, pipeline, commit, branch, author=None, clean_checkout=None, env=None,
+    def create_build(self, organization, pipeline, commit, branch, author=None, clean_checkout=None, env=None,
                      ignore_pipeline_branch_filters=None, message=None, meta_data=None, pull_request_base_branch=None,
                      pull_request_id=None, pull_request_repository=None):
         """
@@ -184,8 +184,8 @@ class Builds(Client):
         :param pull_request_base_branch: Base branch of a PR build
         :param pull_request_id: ID for a PR build
         :param pull_request_repository: Repository for a PR build
-        :return:
-        """     
+        :return: The created build
+        """
         body = {
             "commit": commit,
             "branch": branch,

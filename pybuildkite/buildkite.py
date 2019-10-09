@@ -56,7 +56,7 @@ class BuildKite(object):
     @requires_token
     def organizations(self):
         """
-        Get Organisation operations for the Buildkite API
+        Get Organization operations for the Buildkite API
 
         :return: Client
         """
@@ -107,6 +107,7 @@ class BuildKite(object):
         """
         return Emojis(self.client, self.base_url)
 
+    @requires_token
     def annotations(self):
         """
         Get Annotation operations for the Buildkite API
