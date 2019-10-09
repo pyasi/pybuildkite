@@ -73,7 +73,7 @@ class Client(object):
             return response.text
         else:
             return response.json()
-    
+
     def put(self, url, body=None, headers=None):
         """
         Make a PUT request to the API

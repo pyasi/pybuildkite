@@ -54,7 +54,9 @@ class Builds(Client):
         self.path_for_all = base_url + "builds"
         self.path_by_org = base_url + "organizations/{}/builds"
         self.path_by_pipeline = base_url + "organizations/{}/pipelines/{}/builds"
-        self.path_for_build_number = base_url + "organizations/{}/pipelines/{}/builds/{}"
+        self.path_for_build_number = (
+            base_url + "organizations/{}/pipelines/{}/builds/{}"
+        )
 
     def list_all(
         self,
@@ -252,14 +254,20 @@ class Builds(Client):
         return self.client.post(
             self.path_by_pipeline.format(organization, pipeline), body
         )
-    
+
     def cancel_build(self, organization, pipeline, build_number):
         cancel = "/cancel"
-        return self.client.put(self.path_for_build_number.format(organization, pipeline, build_number) + cancel)
-    
+        return self.client.put(
+            self.path_for_build_number.format(organization, pipeline, build_number)
+            + cancel
+        )
+
     def rebuild_build(self, organization, pipeline, build_number):
         rebuild = "/rebuild"
-        return self.client.put(self.path_for_build_number.format(organization, pipeline, build_number) + rebuild)
+        return self.client.put(
+            self.path_for_build_number.format(organization, pipeline, build_number)
+            + rebuild
+        )
 
     @staticmethod
     def __validate_dates(datetimes):
