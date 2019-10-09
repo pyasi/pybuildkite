@@ -1,5 +1,4 @@
 import requests
-import urllib
 
 
 class Client(object):
@@ -28,6 +27,37 @@ class Client(object):
         """
         self.access_token = access_token
 
+    def request(self, method, url, query_params=None, body=None, headers=None):
+        """
+        Make a request to the API
+
+        The request will be authorised if the access token is set
+
+        :param method: HTTP method to use
+        :param url: URL to call
+        :param query_params: Query parameters to use
+        :param body: Body of the request
+        :param headers: Dictionary of headers to use in HTTP request
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
+
+        query_params = self._clean_query_params(query_params or {})
+
+        if self.access_token:
+            query_params["access_token"] = self.access_token
+
+        if body:
+            body = self._clean_query_params(body)
+
+        response = requests.request(method, url, headers=headers, params=query_params, json=body)
+        response.raise_for_status()
+
+        # TODO what should be returned
+        if headers:
+            return response.text
+
+        return response.json()
+
     def get(self, url, query_params=None, headers=None):
         """
         Make a GET request to the API
@@ -39,20 +69,13 @@ class Client(object):
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        url = self._create_url(url, query_params)
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
-            return response.text
-        else:
-            return response.json()
+        return self.request("GET", url=url, query_params=query_params, headers=headers)
 
-    def post(self, url, body=None, headers=None):
+    def post(self, url, body=None, headers=None, query_params=None):
         """
         Make a POST request to the API
-        
+
         The request will be authorised if the access token is set
 
         :param url: URL to call
@@ -60,24 +83,13 @@ class Client(object):
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        url = self._create_url(url, body)
-        if body is not None:
-            body = self._clean_query_params(body)
-        else:
-            body = {}
-        response = requests.post(url, json=body, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
-            return response.text
-        else:
-            return response.json()
+        return self.request("POST", url=url, query_params=query_params, body=body, headers=headers)
 
-    def put(self, url, body=None, headers=None):
+    def put(self, url, body=None, headers=None, query_params=None):
         """
         Make a PUT request to the API
-        
+
         The request will be authorised if the access token is set
 
         :param url: URL to call
@@ -85,33 +97,8 @@ class Client(object):
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        url = self._create_url(url, body)
-        if body is not None:
-            body = self._clean_query_params(body)
-        else:
-            body = {}
-        response = requests.put(url, json=body, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
-            return response.text
-        else:
-            return response.json()
-
-    def _create_url(self, url, query_params):
-        """
-
-        :param url:
-        :param query_params:
-        :return:
-        """
-        if query_params is None:
-            query_params = {}
-        query_params = self._clean_query_params(query_params)
-        query_params["access_token"] = self.access_token
-        query_params = urllib.parse.urlencode(query_params)
-        return url + "?" + query_params
+        return self.request("PUT", url=url, query_params=query_params, body=body, headers=headers)
 
     @staticmethod
     def _clean_query_params(query_params):
