@@ -30,7 +30,7 @@ class Client(object):
         self.access_token = access_token
         self.header = {"Authorization": "Bearer {}".format(self.access_token)}
 
-    def get(self, url):
+    def get(self, url,query_params=None):
         """
         Make a GET request to the API
 
@@ -42,7 +42,7 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
-        response = requests.get(url, headers=self.header)
+        response = requests.get(url, params=query_params,headers=self.header)
         try:
             response.raise_for_status()
         except:
