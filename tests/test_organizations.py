@@ -1,25 +1,40 @@
-import pytest
+from unittest.mock import Mock
+
 from pybuildkite.organizations import Organizations
-from pybuildkite.client import Client
 
+import pytest
 
-@pytest.fixture()
-def setup_org(mocker):
-    mocker.patch('pybuildkite.client.Client.get', return_value='PASS')
-    client = Client()
-    url = 'https://api.buildkite.com/v2'
-    org = Organizations(client, url)
-    yield org
+class TestOrganizations :
+    """
+    Test functionality of the Jobs class
+    """
+    @pytest.fixture
+    def fake_client(self):
+        """
+        Build a fake API client
+        """
+        return Mock(get=Mock())
 
-def test_organization(setup_org):
-    assert setup_org.client == setup_org.client
-    assert setup_org.path == 'https://api.buildkite.com/v2'+ 'organizations/'
+    def test_Organizations(self, fake_client):
+        """
+        Test organization classes instances
+        """
+        org = Organizations(fake_client, 'https://api.buildkite.com/v2/')
+        assert org.client == fake_client
+        assert org.path == 'https://api.buildkite.com/v2/organizations/'
 
-def test_list_all(setup_org):
-    result = setup_org.list_all()
-    assert "PASS" in result
+    def test_list_all(self, fake_client):
+        """
+        Test organization class 'list_all()'  Method
+        """
+        org = Organizations(fake_client, 'https://api.buildkite.com/v2/')
+        org.list_all()
+        fake_client.get.assert_called_with(org.path)
 
-def test_get_org(setup_org):
-    org_name = 'test'
-    result = setup_org.get_org(org_name)
-    assert "PASS" in result
+    def test_get_org(self, fake_client):
+        """
+        Test organization class 'get_org()' method
+        """
+        org = Organizations(fake_client, 'https://api.buildkite.com/v2/')
+        org.get_org('Test_org')
+        fake_client.get.assert_called_with(org.path + 'Test_org')
