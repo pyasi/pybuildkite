@@ -1,5 +1,6 @@
 import requests
 import urllib
+import json
 
 
 class Client(object):
@@ -27,8 +28,9 @@ class Client(object):
         :param access_token: The token
         """
         self.access_token = access_token
+        self.header = {"Authorization": "Bearer {}".format(self.access_token)}
 
-    def get(self, url, query_params=None, headers=None):
+    def get(self, url):
         """
         Make a GET request to the API
 
@@ -39,17 +41,15 @@ class Client(object):
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        url = self._create_url(url, query_params)
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
+        response = requests.get(url, headers=self.header)
+        try:
+            response.raise_for_status()
+        except:
             return response.text
-        else:
-            return response.json()
+        return response.json()
 
-    def post(self, url, body=None, headers=None):
+    def post(self, url, body=None):
         """
         Make a POST request to the API
         
@@ -57,24 +57,24 @@ class Client(object):
 
         :param url: URL to call
         :param body: Body of the request
-        :param headers: Dictionary of headers to use in HTTP request
+
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        url = self._create_url(url, body)
+
         if body is not None:
             body = self._clean_query_params(body)
         else:
             body = {}
-        response = requests.post(url, json=body, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
+        response = requests.post(url, data=json.dumps(body), headers=self.header)
+        try:
+            response.raise_for_status()
+        except:
             return response.text
-        else:
-            return response.json()
 
-    def put(self, url, body=None, headers=None):
+        return response.json()
+
+    def put(self, url, body=None):
         """
         Make a PUT request to the API
         
@@ -82,7 +82,7 @@ class Client(object):
 
         :param url: URL to call
         :param body: Body of the request
-        :param headers: Dictionary of headers to use in HTTP request
+
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
         url = self._create_url(url, body)
@@ -90,14 +90,28 @@ class Client(object):
             body = self._clean_query_params(body)
         else:
             body = {}
-        response = requests.put(url, json=body, headers=headers)
-        response.raise_for_status()
 
-        # TODO what should be returned
-        if headers:
+        response = requests.put(url, data=json.dumps(body), headers=self.header)
+        try:
+            response.raise_for_status()
+
+        except:
             return response.text
-        else:
-            return response.json()
+
+        return response.json()
+
+    def delete(self, url):
+        """
+        Make a DELETE request to the API
+        :param url: URL to call
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
+        response = requests.delete(url, headers=self.header)
+        try:
+            response.raise_for_status()
+        except:
+            return response.text
+        return response.ok
 
     def _create_url(self, url, query_params):
         """

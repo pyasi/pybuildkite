@@ -33,4 +33,30 @@ class Pipelines(Client):
         :param pipeline_name: Pipeline slug
         :return: A pipeline
         """
-        return self.client.get(self.path.format(organization) + pipeline_name)
+        url = self.path.format(organization) + pipeline_name
+        return self.client.get(url)
+
+    def create_pipeline(self, organization, pipeline_name, git_repository, commands_to_run):
+        """
+        Create a pipeline
+        :param organization:
+        :param pipeline_name:
+        :param git_repository:
+        :param commands_to_run:
+        :return:
+        """
+        data = {'name': pipeline_name,
+                'repository': git_repository,
+                'steps': [dict(type='script', name=':pipeline:', command=commands_to_run)]}
+
+        return self.client.post(self.path.format(organization), body=data)
+
+    def delete_pipeline(self, organization, pipeline):
+        """
+        Delete a pipeline
+        :param organization:
+        :param pipeline:
+        :return:
+        """
+        url = self.path.format(organization) + pipeline
+        return self.client.delete(url)
