@@ -6,6 +6,7 @@ from pybuildkite.jobs import Jobs, LogFormat
 from pybuildkite.agents import Agents
 from pybuildkite.emojis import Emojis
 from pybuildkite.annotations import Annotations
+from pybuildkite.artifacts import Artifacts
 
 
 class BuildKite(object):
@@ -103,8 +104,6 @@ class BuildKite(object):
     def emojis(self):
         """
         Get Emoji operations for the Buildkite API
-
-        :return: Client
         """
         return Emojis(self.client, self.base_url)
 
@@ -114,6 +113,13 @@ class BuildKite(object):
         Get Annotation operations for the Buildkite API
         """
         return Annotations(self.client, self.base_url)
+
+    @requires_token
+    def artifacts(self):
+        """
+        Get Artifact operations for the Buildkite API
+        """
+        return Artifacts(self.client, self.base_url)
 
 
 class NoAcccessTokenException(Exception):
