@@ -50,11 +50,10 @@ class Client(object):
             body = self._clean_query_params(body)
 
         response = requests.request(method, url, headers=headers, params=query_params, json=body)
-        try:
-            response.raise_for_status()
-        except:
-            return response.text
-        if response.status_code == 204:
+
+        response.raise_for_status()
+
+        if method == 'DELETE':
             return response.ok
         else:
             return response.json()

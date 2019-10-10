@@ -35,18 +35,17 @@ class Pipelines(Client):
         """
         return self.client.get(self.path.format(organization) + pipeline_name)
 
-    def create_pipeline(self, organization, pipeline_name, git_repository, commands_to_run):
+    def create_pipeline(self, organization, pipeline_name, git_repository):
         """
         Create a pipeline
         :param organization: Organization slug
         :param pipeline_name:Pipeline slug
         :param git_repository: repo URL
-        :param commands_to_run: build pipeline steps
         :return:
         """
         data = {'name': pipeline_name,
                 'repository': git_repository,
-                'steps': [dict(type='script', name=':pipeline:', command=commands_to_run)]}
+                'steps': [dict(type='script', name=':pipeline:', command='buildkite-agent pipeline upload')]}
 
         return self.client.post(self.path.format(organization), body=data)
 
