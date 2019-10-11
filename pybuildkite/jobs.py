@@ -71,8 +71,9 @@ class Jobs(Client):
         :param job: Job id
         :return: response
         """
+        retry= '/retry'
         return self.client.put(
-            self.path.format(organization, pipeline, build, job)+"retry"
+            self.path.format(organization, pipeline, build, job)+retry
         )
 
     def unblock_job(self, organization, pipeline, build, job, fields, unblocker=None):
@@ -86,12 +87,13 @@ class Jobs(Client):
            :unblocker: The user id of the person activating the job
            :return: response
         """
+        unblock = '/unblock'
         body ={
             "field" : fields,
             "unblocker" : unblocker
         }
         return self.client.put(
-            self.path.format(organization, pipeline, build, job)+"unblock", body=body
+            self.path.format(organization, pipeline, build, job)+ unblock, body=body
         )
 
     def delete_job_log(self, organization, pipeline, build, job):
@@ -103,6 +105,7 @@ class Jobs(Client):
         :param job: job id
         :return: success response 204 No content
         """
+        log = '/log'
         return self.client.delete(
-            self.path.format(organization, pipeline, build,job) + "log"
+            self.path.format(organization, pipeline, build,job) + log
         )
