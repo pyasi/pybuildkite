@@ -52,12 +52,13 @@ class Client(object):
         response = requests.request(
             method, url, headers=headers, params=query_params, json=body
         )
+
         response.raise_for_status()
 
-        if headers:
-            return response.text
-
-        return response.json()
+        if method == "DELETE":
+            return response.ok
+        else:
+            return response.json()
 
     def get(self, url, query_params=None, headers=None):
         """
@@ -81,6 +82,7 @@ class Client(object):
 
         :param url: URL to call
         :param body: Body of the request
+        :param query_params: Query parameters to append to URL
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
@@ -98,11 +100,29 @@ class Client(object):
         :param url: URL to call
         :param body: Body of the request
         :param headers: Dictionary of headers to use in HTTP request
+        :param query_params: Query parameters to append to URL
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
         return self.request(
             "PUT", url=url, query_params=query_params, body=body, headers=headers
+        )
+
+    def delete(self, url, body=None, headers=None, query_params=None):
+        """
+        Make a DELETE request to the API
+
+        The request will be authorised if the access token is set
+
+        :param url: URL to call
+        :param body: Body of the request
+        :param query_params: Query parameters to append to URL
+        :param headers: Dictionary of headers to use in HTTP request
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
+
+        return self.request(
+            "DELETE", url=url, query_params=query_params, body=body, headers=headers
         )
 
     @staticmethod
