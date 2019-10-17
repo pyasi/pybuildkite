@@ -5,3 +5,6 @@ venv3/*
 .idea/*
 *.pyc
 .vscode/*
+/dist/
+/build/
+/pybuildkite.egg-info/

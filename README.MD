@@ -1,4 +1,4 @@
-## This is a WIP and not actually available yet
+# PyBuildkite
 
 A [Python](https://www.python.org/) library and client for the [Buildkite API](https://buildkite.com/docs/api).
 
@@ -13,9 +13,9 @@ pip install pybuildkite
 Then set up an instance of the Buildkite object, set you access token, and make any available requests.
 
 ```python
-from pybuildkite.buildkite import BuildKite, BuildState
+from pybuildkite.buildkite import Buildkite, BuildState
 
-buildkite = BuildKite()
+buildkite = Buildkite()
 buildkite.set_access_token('YOUR_API_ACCESS_TOKEN_HERE')
 
 # Get all info about particular org
