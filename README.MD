@@ -10,7 +10,7 @@ To get the package, execute:
 pip install pybuildkite
 ```
 
-Simple shortened example for listing all pipelines is provided below, see examples for more.
+Then set up an instance of the Buildkite object, set you access token, and make any available requests.
 
 ```python
 from pybuildkite.buildkite import BuildKite, BuildState
@@ -21,11 +21,14 @@ buildkite.set_access_token('YOUR_API_ACCESS_TOKEN_HERE')
 # Get all info about particular org
 buildkite.organizations().get_org('my-org')
 
-# get all running builds for a particular pipeline
+# Get all running builds for a particular pipeline
 buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', state=BuildState.RUNNING)
+
+# Create a build
+buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master', clean_checkout=True, message="My First Build!")
 ```
 
-Note: This API currently only support READ ONLY functionality. It will soon include full CRUD operations.
+
 
 # License
 

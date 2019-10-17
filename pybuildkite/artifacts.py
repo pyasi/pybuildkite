@@ -68,3 +68,5 @@ class Artifacts(Client):
         """
         url = self.path + "jobs/{}/artifacts/{}/download/"
         return self.client.get(url.format(organization, pipeline, build, job, artifact))
+
+    # TODO Delete artifact

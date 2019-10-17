@@ -54,7 +54,6 @@ class Client(object):
         )
         response.raise_for_status()
 
-        # TODO what should be returned
         if headers:
             return response.text
 

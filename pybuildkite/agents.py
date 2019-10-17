@@ -38,3 +38,18 @@ class Agents(Client):
         :return: Single agent
         """
         return self.client.get(self.path.format(organization) + agent_id)
+
+    def stop_agent(self, organization, agent_id, force=True):
+        """
+        Stop an agent
+
+        :param organization: Organization slug
+        :param agent_id: Agent id
+        :param force: Whether or not to force the agent to stop if processing a job
+        :return: no content
+        """
+        body = {"force": force}
+        stop = "/stop"
+        return self.client.put(
+            self.path.format(organization) + agent_id + stop, body=body
+        )
