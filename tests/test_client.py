@@ -48,13 +48,14 @@ class TestClientRequest:
         """
         client = Client()
 
-        with patch('requests.request') as request:
+        with patch("requests.request") as request:
             request.return_value.json.return_value = {}
 
             client.request("GET", "http://www.google.com/")
 
-        request.assert_called_once_with("GET", "http://www.google.com/",
-                                        headers=None, json=None, params={})
+        request.assert_called_once_with(
+            "GET", "http://www.google.com/", headers=None, json=None, params={}
+        )
 
     def test_request_should_include_token_when_set(self):
         """
@@ -64,14 +65,16 @@ class TestClientRequest:
         client = Client()
         client.set_client_access_token("ABCDEF1234")
 
-        with patch('requests.request') as request:
+        with patch("requests.request") as request:
             request.return_value.json.return_value = {}
 
             client.request("GET", "http://www.google.com/")
 
-        expected_params = {
-            "access_token": "ABCDEF1234",
-        }
-        request.assert_called_once_with("GET", "http://www.google.com/",
-                                        headers=None, json=None,
-                                        params=expected_params)
+        expected_params = {"access_token": "ABCDEF1234"}
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers=None,
+            json=None,
+            params=expected_params,
+        )

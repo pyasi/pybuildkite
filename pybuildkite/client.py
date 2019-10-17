@@ -49,7 +49,9 @@ class Client(object):
         if body:
             body = self._clean_query_params(body)
 
-        response = requests.request(method, url, headers=headers, params=query_params, json=body)
+        response = requests.request(
+            method, url, headers=headers, params=query_params, json=body
+        )
         response.raise_for_status()
 
         # TODO what should be returned
@@ -84,7 +86,9 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
-        return self.request("POST", url=url, query_params=query_params, body=body, headers=headers)
+        return self.request(
+            "POST", url=url, query_params=query_params, body=body, headers=headers
+        )
 
     def put(self, url, body=None, headers=None, query_params=None):
         """
@@ -98,7 +102,9 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
-        return self.request("PUT", url=url, query_params=query_params, body=body, headers=headers)
+        return self.request(
+            "PUT", url=url, query_params=query_params, body=body, headers=headers
+        )
 
     @staticmethod
     def _clean_query_params(query_params):
