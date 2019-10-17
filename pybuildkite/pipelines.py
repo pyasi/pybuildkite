@@ -35,9 +35,19 @@ class Pipelines(Client):
         """
         return self.client.get(self.path.format(organization) + pipeline_name)
 
-    def create_pipeline(self, organization, pipeline_name, git_repository,
-                        build_steps=[
-                            dict(type='script', name=':pipeline:', command='buildkite-agent pipeline upload')]):
+    def create_pipeline(
+        self,
+        organization,
+        pipeline_name,
+        git_repository,
+        build_steps=[
+            dict(
+                type="script",
+                name=":pipeline:",
+                command="buildkite-agent pipeline upload",
+            )
+        ],
+    ):
         """
         Create a pipeline
         :param build_steps: list of build pipeline steps
@@ -50,9 +60,11 @@ class Pipelines(Client):
         :param git_repository: repo URL
         :return:
         """
-        data = {'name': pipeline_name,
-                'repository': git_repository,
-                'steps': build_steps}
+        data = {
+            "name": pipeline_name,
+            "repository": git_repository,
+            "steps": build_steps,
+        }
 
         return self.client.post(self.path.format(organization), body=data)
 
