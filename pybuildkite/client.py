@@ -80,6 +80,7 @@ class Client(object):
 
         :param url: URL to call
         :param body: Body of the request
+        :param query_params: Query parameters to append to URL
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
@@ -97,6 +98,7 @@ class Client(object):
         :param url: URL to call
         :param body: Body of the request
         :param headers: Dictionary of headers to use in HTTP request
+        :param query_params: Query parameters to append to URL
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
@@ -112,6 +114,7 @@ class Client(object):
 
         :param url: URL to call
         :param body: Body of the request
+        :param query_params: Query parameters to append to URL
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
