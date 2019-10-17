@@ -84,7 +84,9 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
-        return self.request("POST", url=url, query_params=query_params, body=body, headers=headers)
+        return self.request(
+            "POST", url=url, query_params=query_params, body=body, headers=headers
+        )
 
     def put(self, url, body=None, headers=None, query_params=None):
         """
@@ -98,7 +100,9 @@ class Client(object):
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
-        return self.request("PUT", url=url, query_params=query_params, body=body, headers=headers)
+        return self.request(
+            "PUT", url=url, query_params=query_params, body=body, headers=headers
+        )
 
     def delete(self, url, body=None, headers=None, query_params=None):
         """

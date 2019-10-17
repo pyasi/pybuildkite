@@ -5,6 +5,7 @@ class Artifacts(Client):
     """
     Artifacts operations for the Buildkite API
     """
+
     def __init__(self, client, base_url):
         """
         Construct the class
@@ -67,3 +68,5 @@ class Artifacts(Client):
         """
         url = self.path + "jobs/{}/artifacts/{}/download/"
         return self.client.get(url.format(organization, pipeline, build, job, artifact))
+
+    # TODO Delete artifact

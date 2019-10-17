@@ -61,3 +61,48 @@ class Jobs(Client):
         return self.client.get(
             self.path.format(organization, pipeline, build, job) + "env"
         )
+
+    def retry_job(self, organization, pipeline, build, job):
+        """
+        Retries a failed or timed_out job.
+         :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :param build: Build number
+        :param job: Job id
+        :return: response
+        """
+        retry = "/retry"
+        return self.client.put(
+            self.path.format(organization, pipeline, build, job) + retry
+        )
+
+    def unblock_job(self, organization, pipeline, build, job, fields, unblocker=None):
+        """
+           Unblocks a build’s "Block pipeline" job.
+            :param organization: Organization slug
+           :param pipeline: Pipeline slug
+           :param build: Build number
+           :param job: Job id
+           :fields: name and email
+           :unblocker: The user id of the person activating the job
+           :return: response
+        """
+        unblock = "/unblock"
+        body = {"field": fields, "unblocker": unblocker}
+        return self.client.put(
+            self.path.format(organization, pipeline, build, job) + unblock, body=body
+        )
+
+    def delete_job_log(self, organization, pipeline, build, job):
+        """
+        Delete a job’s log output
+        :param organization: organization slug
+        :param pipeline: pipeline slug
+        :param build: Build number
+        :param job: job id
+        :return: success response 204 No content
+        """
+        log = "/log"
+        return self.client.delete(
+            self.path.format(organization, pipeline, build, job) + log
+        )
