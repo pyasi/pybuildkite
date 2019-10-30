@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
 from pybuildkite.client import Client
+from typing import List
 
 
 class BuildState(Enum):
@@ -64,7 +65,7 @@ class Builds(Client):
         created_from=None,
         created_to=None,
         finished_from=None,
-        state=None,
+        states=[],
         meta_data=None,
         branch=None,
         commit=None,
@@ -78,21 +79,21 @@ class Builds(Client):
         :param created_from: Filters the results by builds created on or after the given datetime.date
         :param created_to: Filters the results by builds created before the given datetime.date
         :param finished_from: Filters the results by builds finished on or after the given datetime.date
-        :param state: Filters the results by the given build state.
+        :param states: Filters the results by build states [List]
         :param meta_data: Filters the results by the given meta_data. Example: ?meta_data[some-key]=some-value
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
         :return: Returns a paginated list of all builds across all the user’s organizations and pipelines
         """
         self.__validate_dates([created_from, created_to, finished_from])
-        self.__is_valid_state(state)
+        self.__are_valid_states(states)
 
         query_params = {
             "creator": creator,
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state.value if state is not None else state,
+            "state": self.__get_build_states_query_param(states),
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
@@ -106,7 +107,7 @@ class Builds(Client):
         created_from=None,
         created_to=None,
         finished_from=None,
-        state=None,
+        states=[],
         meta_data=None,
         branch=None,
         commit=None,
@@ -120,7 +121,7 @@ class Builds(Client):
         :param created_from: Filters the results by builds created on or after the given datetime.date
         :param created_to: Filters the results by builds created before the given datetime.date
         :param finished_from: Filters the results by builds finished on or after the given datetime.date
-        :param state: Filters the results by the given build state.
+        :param states: Filters the results by build states [List]
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
@@ -129,14 +130,14 @@ class Builds(Client):
 
         # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
-        self.__is_valid_state(state)
+        self.__are_valid_states(states)
 
         query_params = {
             "creator": creator,
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state.value if state is not None else state,
+            "state": self.__get_build_states_query_param(states),
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
@@ -151,7 +152,7 @@ class Builds(Client):
         created_from=None,
         created_to=None,
         finished_from=None,
-        state=None,
+        states=[],
         meta_data=None,
         branch=None,
         commit=None,
@@ -166,7 +167,7 @@ class Builds(Client):
         :param created_from: Filters the results by builds created on or after the given datetime.date
         :param created_to: Filters the results by builds created before the given datetime.date
         :param finished_from: Filters the results by builds finished on or after the given datetime.date
-        :param state: Filters the results by the given build state.
+        :param states: Filters the results by build states [List]
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
@@ -175,14 +176,14 @@ class Builds(Client):
 
         # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
-        self.__is_valid_state(state)
+        self.__are_valid_states(states)
 
         query_params = {
             "creator": creator,
             "created_from": created_from,
             "created_to": created_to,
             "finished_from": finished_from,
-            "state": state.value if state is not None else state,
+            "state": self.__get_build_states_query_param(states),
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
@@ -277,11 +278,27 @@ class Builds(Client):
                     raise NotValidDateTime
 
     @staticmethod
-    def __is_valid_state(state):
-        if state is None:
+    def __are_valid_states(states):
+        if not isinstance(states, List):
+            raise BuildStateNotAList
+        if not states:
             return
-        if not isinstance(state, BuildState):
-            raise NotValidBuildState
+        for state in states:
+            if not isinstance(state, BuildState):
+                raise NotValidBuildState
+    
+    @staticmethod
+    def __get_build_states_query_param(states):
+        if not states:
+            return None
+        if len(states) == 1:
+            return states[0].value
+        else:
+            param_string = ""
+            for state in states:
+                param_string += "[]={}&".format(state.value)
+            param_string = param_string[:-1]
+            return param_string
 
 
 class NotValidDateTime(Exception):
@@ -295,6 +312,13 @@ class NotValidDateTime(Exception):
 class NotValidBuildState(Exception):
     """
     Raised when state is not a valid BuildState
+    """
+
+    pass
+
+class BuildStateNotAList(Exception):
+    """
+    Raised when build state is not passed as a list
     """
 
     pass
