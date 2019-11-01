@@ -8,3 +8,4 @@ venv3/*
 /dist/
 /build/
 /pybuildkite.egg-info/
+.Python
