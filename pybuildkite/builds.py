@@ -286,7 +286,7 @@ class Builds(Client):
         for state in states:
             if not isinstance(state, BuildState):
                 raise NotValidBuildState
-    
+
     @staticmethod
     def __get_build_states_query_param(states):
         if not states:
@@ -294,9 +294,9 @@ class Builds(Client):
         if len(states) == 1:
             return states[0].value
         else:
-            param_string = ''
+            param_string = ""
             for state in states:
-                param_string += 'state[]={}&'.format(state.value)
+                param_string += "state[]={}&".format(state.value)
             return param_string[:-1]
 
 
@@ -314,6 +314,7 @@ class NotValidBuildState(Exception):
     """
 
     pass
+
 
 class BuildStateNotAList(Exception):
     """
