@@ -294,11 +294,10 @@ class Builds(Client):
         if len(states) == 1:
             return states[0].value
         else:
-            param_string = ""
+            param_string = ''
             for state in states:
-                param_string += "[]={}&".format(state.value)
-            param_string = param_string[:-1]
-            return param_string
+                param_string += 'state[]={}&'.format(state.value)
+            return param_string[:-1]
 
 
 class NotValidDateTime(Exception):

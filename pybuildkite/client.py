@@ -42,17 +42,17 @@ class Client(object):
         """
 
         query_params = self._clean_query_params(query_params or {})
-
+        
         if self.access_token:
             query_params["access_token"] = self.access_token
 
         if body:
             body = self._clean_query_params(body)
 
+        query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method, url, headers=headers, params=query_params, json=body
+            method, url, headers=headers, params=str.encode(query_params), json=body
         )
-
         response.raise_for_status()
 
         if method == "DELETE":
@@ -133,3 +133,21 @@ class Client(object):
         :return:
         """
         return {key: value for key, value in query_params.items() if value is not None}
+
+    @staticmethod
+    def _convert_query_params_to_string_for_bytes(query_params):
+        """
+        Required to set multiple build states i.e ?state[]=running&state[]=scheduled
+
+        :param query_params: query parameters
+        :return: bytes of query param
+        """
+        query_string = ''
+        for key, value in query_params.items():
+            if query_string != '':
+                query_string += '&'
+            if key == 'state':
+                query_string += value
+            else:
+                query_string += key + '=' + value
+        return query_string
