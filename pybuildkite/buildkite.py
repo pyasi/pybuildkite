@@ -9,7 +9,7 @@ from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
 
 
-class BuildKite(object):
+class Buildkite(object):
     """
     Public API for Buildkite
     """

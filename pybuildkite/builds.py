@@ -69,6 +69,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
     ):
         """
         Returns a paginated list of all builds across all the user’s organizations and pipelines. If using
@@ -97,6 +98,7 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
         return self.client.get(self.path_for_all, query_params)
 
@@ -111,6 +113,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
     ):
         """
         Returns a paginated list of an organization’s builds across all of an organization’s pipelines. Builds are
@@ -128,7 +131,6 @@ class Builds(Client):
         :return: Returns a paginated list of an organization’s builds across all of an organization’s pipelines.
         """
 
-        # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
         self.__are_valid_states(states)
 
@@ -141,6 +143,7 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
         return self.client.get(self.path_by_org.format(organization), query_params)
 
@@ -156,6 +159,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
     ):
         """
         Returns a paginated list of a pipeline’s builds. Builds are listed in the order they were created (newest
@@ -174,7 +178,6 @@ class Builds(Client):
         :return: Returns a paginated list of a pipeline’s builds.
         """
 
-        # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
         self.__are_valid_states(states)
 
@@ -187,6 +190,7 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
         return self.client.get(
             self.path_by_pipeline.format(organization, pipeline), query_params

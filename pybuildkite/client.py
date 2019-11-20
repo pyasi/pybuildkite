@@ -55,11 +55,39 @@ class Client(object):
             method, url, headers=headers, params=str.encode(query_params), json=body
         )
         response.raise_for_status()
-
+        if method == "GET":
+            response = self._append_pagination_data(response)
+            return response
         if method == "DELETE":
             return response.ok
         else:
-            return response.json()
+            return Response(response.json())
+
+    def _append_pagination_data(self, response):
+        """
+        """
+        response_json = response.json()
+        if "Link" in response.headers and len(response.headers["Link"]) > 0:
+            for link in response.headers["Link"].split(", "):
+                url, page_value = link.split("; ", 1)
+                link_type = {
+                    'rel="next"': {"next_page": self._get_page_number_from_url(url)},
+                    'rel="last"': {"last_page": self._get_page_number_from_url(url)},
+                    'rel="first"': {"first_page": self._get_page_number_from_url(url)},
+                    'rel="prev"': {"prev_page": self._get_page_number_from_url(url)},
+                }
+                response_json.append(link_type.get(page_value))
+        return response_json
+
+    def _get_page_number_from_url(self, url):
+        """
+        Gets the page number for pagination from a given url
+        """
+        for segment in url.split("&"):
+            if "page" in segment and "api" not in segment:
+                segment, number = segment.split("=", 1)
+                return int(number)
+        return 0
 
     def get(self, url, query_params=None, headers=None):
         """
@@ -72,7 +100,6 @@ class Client(object):
         :param headers: Dictionary of headers to use in HTTP request
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-
         return self.request("GET", url=url, query_params=query_params, headers=headers)
 
     def post(self, url, body=None, headers=None, query_params=None):
@@ -150,5 +177,16 @@ class Client(object):
             if key == "state":
                 query_string += value
             else:
-                query_string += key + "=" + value
+                query_string += key + "=" + str(value)
         return query_string
+
+class Response:
+
+    def __init__(self, body):
+        """
+        """
+        self.body = body
+        self.next_page = None
+        self.last_page = None
+        self.first_page = None
+        self.previous_page = None

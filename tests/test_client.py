@@ -35,6 +35,28 @@ class TestClient:
         original_query_params = client._clean_query_params(original_query_params)
         assert original_query_params == cleaned_query_params
 
+    @pytest.mark.parametrize(
+        "url,expected_output",
+        [
+            (
+                "https://api.buildkite.com/v2/organization/builds?access_token=F@keT0k3N&page=2&commit=SHA",
+                2,
+            ),
+            (
+                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&page=5&commit=SHA",
+                5,
+            ),
+            (
+                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&commit=SHA",
+                0,
+            ),
+        ],
+    )
+    def test_getting_page_from_url(self, url, expected_output):
+        client = Client()
+        output = client._get_page_number_from_url(url)
+        assert output == expected_output
+
 
 class TestClientRequest:
     """
@@ -54,7 +76,11 @@ class TestClientRequest:
             client.request("GET", "http://www.google.com/")
 
         request.assert_called_once_with(
-            "GET", "http://www.google.com/", headers=None, json=None, params={}
+            "GET",
+            "http://www.google.com/",
+            headers=None,
+            json=None,
+            params=b"per_page=100",
         )
 
     def test_request_should_include_token_when_set(self):
@@ -70,7 +96,7 @@ class TestClientRequest:
 
             client.request("GET", "http://www.google.com/")
 
-        expected_params = {"access_token": "ABCDEF1234"}
+        expected_params = b"access_token=ABCDEF1234&per_page=100"
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",

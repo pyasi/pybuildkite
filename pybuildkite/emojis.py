@@ -16,11 +16,14 @@ class Emojis(Client):
         self.client = client
         self.path = base_url + "organizations/{}/emojis/"
 
-    def list_emojis(self, organization):
+    def list_emojis(self, organization, page=0):
         """
         Returns a list of all the emojis for a given organization
 
         :param organization: organization slug
         :return: Returns a list of all the emojis for a given organization
         """
-        return self.client.get(self.path.format(organization))
+        query_parms = {
+            "page": page
+        }
+        return self.client.get(self.path.format(organization), query_params=query_parms)
