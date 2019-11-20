@@ -19,15 +19,29 @@ buildkite = Buildkite()
 buildkite.set_access_token('YOUR_API_ACCESS_TOKEN_HERE')
 
 # Get all info about particular org
-buildkite.organizations().get_org('my-org')
+org = buildkite.organizations().get_org('my-org')
 
-# Get all running builds for a particular pipeline
-buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', state=BuildState.RUNNING)
+# Get all running and scheduled builds for a particular pipeline
+builds = buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', states=[BuildState.RUNNING, Buildstate.SCHEDULED])
 
 # Create a build
-buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master', clean_checkout=True, message="My First Build!")
+buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master', 
+clean_checkout=True, message="My First Build!")
 ```
 
+## Pagination
+
+Buildkite offers pagination for endpoints that return a lot of data. By default this wrapper return `100` objects. However, any request that may contain more than that offers a pagination option.
+
+When `with_pagination=True`, we return a response object with properties that may have `next_page`, `last_page`, `previous_page`, or `first_page` depending on what page you're on.
+
+```python
+builds_response = buildkite.builds().list_all(page=1, with_pagination=True)
+
+# Keep looping until next_page is not populated
+while builds_response.next_page:
+    builds_respose = buildkite.builds().list_all(page=builds_response.next_page, with_pagination=True)
+```
 
 
 # License

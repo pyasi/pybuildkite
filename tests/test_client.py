@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pybuildkite.client import Client
+from pybuildkite.client import Client, Response
 
 
 class TestClient:
@@ -35,6 +35,8 @@ class TestClient:
         original_query_params = client._clean_query_params(original_query_params)
         assert original_query_params == cleaned_query_params
 
+
+class TestResponse:
     @pytest.mark.parametrize(
         "url,expected_output",
         [
@@ -53,9 +55,36 @@ class TestClient:
         ],
     )
     def test_getting_page_from_url(self, url, expected_output):
-        client = Client()
-        output = client._get_page_number_from_url(url)
+        response = Response({"Body": "FakeBody"})
+        output = response._get_page_number_from_url(url)
         assert output == expected_output
+
+    def test_no_data_added_without_pagination_headers(self):
+        response = Response({"Body": "FakeBody"})
+        response_headers = ""
+        response.append_pagination_data(response_headers)
+        assert response.body == {"Body": "FakeBody"}
+        assert response.first_page == None
+        assert response.last_page == None
+        assert response.previous_page == None
+        assert response.next_page == None
+
+    def test_pagination_headers_with_next_and_last(self):
+        response = Response({"Body": "FakeBody"})
+        response_headers = {
+            "Date": "Wed, 20 Nov 2019 03:13:27 GMT",
+            "Content-Type": "application/json; charset=utf-8",
+            "Connection": "keep-alive",
+            "Server": "nginx",
+            "Link": '<https://api.buildkite.com/v2/builds?access_token=FakeToken&page=2&per_page=100>; rel="next", <https://api.buildkite.com/v2/builds?access_token=FakeToken&page=8&per_page=100>; rel="last"',
+            "X-OAuth-Scopes": "read_agents",
+        }
+        response.append_pagination_data(response_headers)
+        assert response.body == {"Body": "FakeBody"}
+        assert response.first_page == None
+        assert response.last_page == 8
+        assert response.previous_page == None
+        assert response.next_page == 2
 
 
 class TestClientRequest:
