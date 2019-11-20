@@ -40,7 +40,7 @@ builds_response = buildkite.builds().list_all(page=1, with_pagination=True)
 
 # Keep looping until next_page is not populated
 while builds_response.next_page:
-    builds_respose = buildkite.builds().list_all(page=builds_response.next_page, with_pagination=True)
+    builds_response = buildkite.builds().list_all(page=builds_response.next_page, with_pagination=True)
 ```
 
 
