@@ -72,10 +72,13 @@ class Client(object):
         if method == "DELETE":
             return response.ok
         else:
-            return Response(response.json())
+            return response.json()
 
     def _get_paginated_response(self, response):
         """
+        Return a Response object with pagination data
+
+        :return: Response object
         """
         response_object = Response(response.json())
         response_object.append_pagination_data(response.headers)
@@ -181,9 +184,11 @@ class Client(object):
 
 
 class Response:
+    """
+    Response object used for pagination requests
+    """
+
     def __init__(self, body):
-        """
-        """
         self.body = body
         self.next_page = None
         self.last_page = None
@@ -192,6 +197,9 @@ class Response:
 
     def append_pagination_data(self, response_headers):
         """
+        Add pagination data to the response based on response headers
+
+        :param respone_headers: dict containing pagination information from the API
         """
         if "Link" in response_headers and len(response_headers["Link"]) > 0:
             for link in response_headers["Link"].split(", "):
@@ -209,6 +217,9 @@ class Response:
     def _get_page_number_from_url(self, url):
         """
         Gets the page number for pagination from a given url
+
+        :param url: url to retrieve page from
+        :return: int of page in url
         """
         for segment in url.split("&"):
             if "page" in segment and "api" not in segment:
