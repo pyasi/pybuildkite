@@ -27,7 +27,15 @@ class Client(object):
         """
         self.access_token = access_token
 
-    def request(self, method, url, query_params=None, body=None, headers=None):
+    def request(
+        self,
+        method,
+        url,
+        query_params=None,
+        body=None,
+        headers=None,
+        with_pagination=False,
+    ):
         """
         Make a request to the API
 
@@ -38,6 +46,7 @@ class Client(object):
         :param query_params: Query parameters to use
         :param body: Body of the request
         :param headers: Dictionary of headers to use in HTTP request
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
 
@@ -54,14 +63,28 @@ class Client(object):
         response = requests.request(
             method, url, headers=headers, params=str.encode(query_params), json=body
         )
+
         response.raise_for_status()
 
+        if with_pagination:
+            response = self._get_paginated_response(response)
+            return response
         if method == "DELETE":
             return response.ok
         else:
             return response.json()
 
-    def get(self, url, query_params=None, headers=None):
+    def _get_paginated_response(self, response):
+        """
+        Return a Response object with pagination data
+
+        :return: Response object
+        """
+        response_object = Response(response.json())
+        response_object.append_pagination_data(response.headers)
+        return response_object
+
+    def get(self, url, query_params=None, headers=None, with_pagination=False):
         """
         Make a GET request to the API
 
@@ -70,10 +93,16 @@ class Client(object):
         :param url: URL to call
         :param query_params: Query parameters to append to URL
         :param headers: Dictionary of headers to use in HTTP request
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-
-        return self.request("GET", url=url, query_params=query_params, headers=headers)
+        return self.request(
+            "GET",
+            url=url,
+            query_params=query_params,
+            headers=headers,
+            with_pagination=with_pagination,
+        )
 
     def post(self, url, body=None, headers=None, query_params=None):
         """
@@ -150,5 +179,50 @@ class Client(object):
             if key == "state":
                 query_string += value
             else:
-                query_string += key + "=" + value
+                query_string += key + "=" + str(value)
         return query_string
+
+
+class Response:
+    """
+    Response object used for pagination requests
+    """
+
+    def __init__(self, body):
+        self.body = body
+        self.next_page = None
+        self.last_page = None
+        self.first_page = None
+        self.previous_page = None
+
+    def append_pagination_data(self, response_headers):
+        """
+        Add pagination data to the response based on response headers
+
+        :param respone_headers: dict containing pagination information from the API
+        """
+        if "Link" in response_headers and len(response_headers["Link"]) > 0:
+            for link in response_headers["Link"].split(", "):
+                url, page_value = link.split("; ", 1)
+                if page_value == 'rel="next"':
+                    self.next_page = self._get_page_number_from_url(url)
+                elif page_value == 'rel="last"':
+                    self.last_page = self._get_page_number_from_url(url)
+                elif page_value == 'rel="first"':
+                    self.first_page = self._get_page_number_from_url(url)
+                elif page_value == 'rel="prev"':
+                    self.previous_page = self._get_page_number_from_url(url)
+        return self
+
+    def _get_page_number_from_url(self, url):
+        """
+        Gets the page number for pagination from a given url
+
+        :param url: url to retrieve page from
+        :return: int of page in url
+        """
+        for segment in url.split("&"):
+            if "page" in segment and "api" not in segment:
+                segment, number = segment.split("=", 1)
+                return int(number)
+        return 0

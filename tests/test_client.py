@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pybuildkite.client import Client
+from pybuildkite.client import Client, Response
 
 
 class TestClient:
@@ -36,6 +36,57 @@ class TestClient:
         assert original_query_params == cleaned_query_params
 
 
+class TestResponse:
+    @pytest.mark.parametrize(
+        "url,expected_output",
+        [
+            (
+                "https://api.buildkite.com/v2/organization/builds?access_token=F@keT0k3N&page=2&commit=SHA",
+                2,
+            ),
+            (
+                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&page=5&commit=SHA",
+                5,
+            ),
+            (
+                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&commit=SHA",
+                0,
+            ),
+        ],
+    )
+    def test_getting_page_from_url(self, url, expected_output):
+        response = Response({"Body": "FakeBody"})
+        output = response._get_page_number_from_url(url)
+        assert output == expected_output
+
+    def test_no_data_added_without_pagination_headers(self):
+        response = Response({"Body": "FakeBody"})
+        response_headers = ""
+        response.append_pagination_data(response_headers)
+        assert response.body == {"Body": "FakeBody"}
+        assert response.first_page == None
+        assert response.last_page == None
+        assert response.previous_page == None
+        assert response.next_page == None
+
+    def test_pagination_headers_with_next_and_last(self):
+        response = Response({"Body": "FakeBody"})
+        response_headers = {
+            "Date": "Wed, 20 Nov 2019 03:13:27 GMT",
+            "Content-Type": "application/json; charset=utf-8",
+            "Connection": "keep-alive",
+            "Server": "nginx",
+            "Link": '<https://api.buildkite.com/v2/builds?access_token=FakeToken&page=2&per_page=100>; rel="next", <https://api.buildkite.com/v2/builds?access_token=FakeToken&page=8&per_page=100>; rel="last"',
+            "X-OAuth-Scopes": "read_agents",
+        }
+        response.append_pagination_data(response_headers)
+        assert response.body == {"Body": "FakeBody"}
+        assert response.first_page == None
+        assert response.last_page == 8
+        assert response.previous_page == None
+        assert response.next_page == 2
+
+
 class TestClientRequest:
     """
     Test the request-method of the client class
@@ -54,7 +105,11 @@ class TestClientRequest:
             client.request("GET", "http://www.google.com/")
 
         request.assert_called_once_with(
-            "GET", "http://www.google.com/", headers=None, json=None, params={}
+            "GET",
+            "http://www.google.com/",
+            headers=None,
+            json=None,
+            params=b"per_page=100",
         )
 
     def test_request_should_include_token_when_set(self):
@@ -70,7 +125,7 @@ class TestClientRequest:
 
             client.request("GET", "http://www.google.com/")
 
-        expected_params = {"access_token": "ABCDEF1234"}
+        expected_params = b"access_token=ABCDEF1234&per_page=100"
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",

@@ -1,5 +1,5 @@
 import pytest
-from pybuildkite.buildkite import BuildKite, NoAcccessTokenException
+from pybuildkite.buildkite import Buildkite, NoAcccessTokenException
 
 
 class TestBuildkite:
@@ -12,13 +12,13 @@ class TestBuildkite:
         Test that exception is raised if no access token is set
         """
         with pytest.raises(NoAcccessTokenException):
-            buildkite = BuildKite()
+            buildkite = Buildkite()
             buildkite.agents()
 
     def test_access_token_set(self):
         """
         Test that methods can be called when access token is set
         """
-        buildkite = BuildKite()
+        buildkite = Buildkite()
         buildkite.set_access_token("FAKE-ACCESS-TOKEN")
         assert buildkite.agents()

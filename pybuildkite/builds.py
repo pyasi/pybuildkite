@@ -69,6 +69,8 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
+        with_pagination=False,
     ):
         """
         Returns a paginated list of all builds across all the user’s organizations and pipelines. If using
@@ -83,6 +85,8 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data. Example: ?meta_data[some-key]=some-value
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of all builds across all the user’s organizations and pipelines
         """
         self.__validate_dates([created_from, created_to, finished_from])
@@ -97,8 +101,11 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
-        return self.client.get(self.path_for_all, query_params)
+        return self.client.get(
+            self.path_for_all, query_params, with_pagination=with_pagination
+        )
 
     def list_all_for_org(
         self,
@@ -111,6 +118,8 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
+        with_pagination=False,
     ):
         """
         Returns a paginated list of an organization’s builds across all of an organization’s pipelines. Builds are
@@ -125,10 +134,11 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of an organization’s builds across all of an organization’s pipelines.
         """
 
-        # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
         self.__are_valid_states(states)
 
@@ -141,8 +151,13 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
-        return self.client.get(self.path_by_org.format(organization), query_params)
+        return self.client.get(
+            self.path_by_org.format(organization),
+            query_params,
+            with_pagination=with_pagination,
+        )
 
     def list_all_for_pipeline(
         self,
@@ -156,6 +171,8 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        page=0,
+        with_pagination=False,
     ):
         """
         Returns a paginated list of a pipeline’s builds. Builds are listed in the order they were created (newest
@@ -171,10 +188,11 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of a pipeline’s builds.
         """
 
-        # TODO dry this?
         self.__validate_dates([created_from, created_to, finished_from])
         self.__are_valid_states(states)
 
@@ -187,9 +205,12 @@ class Builds(Client):
             "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
+            "page": page,
         }
         return self.client.get(
-            self.path_by_pipeline.format(organization, pipeline), query_params
+            self.path_by_pipeline.format(organization, pipeline),
+            query_params,
+            with_pagination=with_pagination,
         )
 
     def get_build_by_number(self, organization, pipeline, build_number):

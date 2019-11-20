@@ -31,7 +31,19 @@ class TestOrganizations:
         """
         org = Organizations(fake_client, "https://api.buildkite.com/v2/")
         org.list_all()
-        fake_client.get.assert_called_with(org.path)
+        fake_client.get.assert_called_with(
+            org.path, query_params={"page": 0}, with_pagination=False
+        )
+
+    def test_list_all_with_pagination(self, fake_client):
+        """
+        Test organization class 'list_all()'  Method with pagination
+        """
+        org = Organizations(fake_client, "https://api.buildkite.com/v2/")
+        org.list_all(page=2, with_pagination=True)
+        fake_client.get.assert_called_with(
+            org.path, query_params={"page": 2}, with_pagination=True
+        )
 
     def test_get_org(self, fake_client):
         """

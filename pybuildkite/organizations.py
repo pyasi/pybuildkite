@@ -16,13 +16,18 @@ class Organizations(Client):
         self.client = client
         self.path = base_url + "organizations/"
 
-    def list_all(self):
+    def list_all(self, page=0, with_pagination=False):
         """
         Returns a paginated list of the user’s organizations.
-
+        
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Paginated list of the user’s organizations.
         """
-        return self.client.get(self.path)
+        query_params = {"page": page}
+        return self.client.get(
+            self.path, query_params=query_params, with_pagination=with_pagination
+        )
 
     def get_org(self, org_name):
         """

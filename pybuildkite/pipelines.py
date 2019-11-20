@@ -16,14 +16,21 @@ class Pipelines(Client):
         self.client = client
         self.path = base_url + "organizations/{}/pipelines/"
 
-    def list_pipelines(self, organization):
+    def list_pipelines(self, organization, page=0, with_pagination=False):
         """
         Returns a paginated list of an organization’s pipelines.
 
         :param organization: Organization slug
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of an organization’s pipelines.
         """
-        return self.client.get(self.path.format(organization))
+        query_params = {"page": 0}
+        return self.client.get(
+            self.path.format(organization),
+            query_params=query_params,
+            with_pagination=with_pagination,
+        )
 
     def get_pipeline(self, organization, pipeline_name):
         """

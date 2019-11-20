@@ -16,18 +16,37 @@ class Agents(Client):
         self.client = client
         self.path = base_url + "organizations/{}/agents/"
 
-    def list_all(self, organizations, name=None, hostname=None, version=None):
+    def list_all(
+        self,
+        organization,
+        name=None,
+        hostname=None,
+        version=None,
+        page=0,
+        with_pagination=False,
+    ):
         """
         Returns a paginated list of an organization’s agents.
 
-        :param organizations: Organization slug
+        :param organization: Organization slug
         :param name: Filters the results by the given agent name
         :param hostname: Filters the results by the given hostname
         :param version: Filters the results by the given exact version number
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of an organization’s agents
         """
-        query_params = {"name": name, "hostname": hostname, "version": version}
-        return self.client.get(self.path.format(organizations), query_params)
+        query_params = {
+            "name": name,
+            "hostname": hostname,
+            "version": version,
+            "page": page,
+        }
+        return self.client.get(
+            self.path.format(organization),
+            query_params,
+            with_pagination=with_pagination,
+        )
 
     def get_agent(self, organization, agent_id):
         """

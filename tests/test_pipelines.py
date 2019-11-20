@@ -33,7 +33,11 @@ class TestPipelines:
         """
         pipelines = Pipelines(fake_client, "https://api.buildkite.com/v2/")
         pipelines.list_pipelines("Test_org")
-        fake_client.get.assert_called_with(pipelines.path.format("Test_org"))
+        fake_client.get.assert_called_with(
+            pipelines.path.format("Test_org"),
+            query_params={"page": 0},
+            with_pagination=False,
+        )
 
     def test_get_pipeline(self, fake_client):
         """
