@@ -25,7 +25,7 @@ class Pipelines(Client):
         :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of an organization’s pipelines.
         """
-        query_params = {"page": 0}
+        query_params = {"page": page}
         return self.client.get(
             self.path.format(organization),
             query_params=query_params,
