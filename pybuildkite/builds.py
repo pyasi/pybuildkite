@@ -313,7 +313,7 @@ class Builds(Client):
         if not states:
             return None
         if len(states) == 1:
-            return states[0].value
+            return "state=" + states[0].value
         else:
             param_string = ""
             for state in states:
