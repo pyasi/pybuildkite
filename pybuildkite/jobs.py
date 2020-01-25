@@ -89,7 +89,7 @@ class Jobs(Client):
            :return: response
         """
         unblock = "/unblock"
-        body = {"field": fields, "unblocker": unblocker}
+        body = {"fields": fields, "unblocker": unblocker}
         return self.client.put(
             self.path.format(organization, pipeline, build, job) + unblock, body=body
         )
