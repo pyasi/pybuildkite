@@ -28,7 +28,7 @@ class Jobs(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + "/organizations/{}/pipelines/{}/builds/{}/jobs/{}/"
+        self.path = base_url + "organizations/{}/pipelines/{}/builds/{}/jobs/{}/"
 
     def get_job_log(
         self, organization, pipeline, build, job, log_format=LogFormat.HTML
