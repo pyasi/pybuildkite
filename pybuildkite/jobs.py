@@ -10,6 +10,7 @@ class LogFormat(Enum):
 
     TEXT = "text/plain"
     HTML = "text/html"
+    JSON = "application/json"
 
     def __str__(self):
         return self.value
