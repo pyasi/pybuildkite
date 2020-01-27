@@ -72,7 +72,7 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        if headers == None or headers.get('Accept') == 'application/json':
+        if headers == None or headers.get("Accept") == "application/json":
             return response.json()
         else:
             return response.text

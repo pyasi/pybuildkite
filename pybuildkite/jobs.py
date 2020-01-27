@@ -46,7 +46,8 @@ class Jobs(Client):
         """
         header = {"Accept": str(log_format)}
         return self.client.get(
-            self.path.format(organization, pipeline, build, job) + "/log", headers=header
+            self.path.format(organization, pipeline, build, job) + "/log",
+            headers=header,
         )
 
     def get_job_environment_variables(self, organization, pipeline, build, job):
