@@ -59,6 +59,7 @@ class Client(object):
             body = self._clean_query_params(body)
 
         query_params["per_page"] = "100"
+
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
             method, url, headers=headers, params=str.encode(query_params), json=body
@@ -71,8 +72,10 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        else:
+        if headers == None or headers.get("Accept") == "application/json":
             return response.json()
+        else:
+            return response.text
 
     def _get_paginated_response(self, response):
         """

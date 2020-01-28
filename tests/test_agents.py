@@ -23,7 +23,5 @@ class TestAgents:
         """
         agents = Agents(fake_client, "base")
         artifacts.get_agent("org_slug", "agent_id")
-        url = (
-            "baseorganizations/org_slug/agents/agent_id"
-        )
+        url = "baseorganizations/org_slug/agents/agent_id"
         fake_client.get.assert_called_with(url)

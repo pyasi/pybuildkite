@@ -10,6 +10,7 @@ class LogFormat(Enum):
 
     TEXT = "text/plain"
     HTML = "text/html"
+    JSON = "application/json"
 
     def __str__(self):
         return self.value
@@ -28,7 +29,7 @@ class Jobs(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + "/organizations/{}/pipelines/{}/builds/{}/jobs/{}/"
+        self.path = base_url + "organizations/{}/pipelines/{}/builds/{}/jobs/{}"
 
     def get_job_log(
         self, organization, pipeline, build, job, log_format=LogFormat.HTML
@@ -45,7 +46,8 @@ class Jobs(Client):
         """
         header = {"Accept": str(log_format)}
         return self.client.get(
-            self.path.format(organization, pipeline, build, job) + "log", headers=header
+            self.path.format(organization, pipeline, build, job) + "/log",
+            headers=header,
         )
 
     def get_job_environment_variables(self, organization, pipeline, build, job):
@@ -59,7 +61,7 @@ class Jobs(Client):
         :return: Environment variables
         """
         return self.client.get(
-            self.path.format(organization, pipeline, build, job) + "env"
+            self.path.format(organization, pipeline, build, job) + "/env"
         )
 
     def retry_job(self, organization, pipeline, build, job):
@@ -88,7 +90,7 @@ class Jobs(Client):
            :return: response
         """
         unblock = "/unblock"
-        body = {"field": fields, "unblocker": unblocker}
+        body = {"fields": fields, "unblocker": unblocker}
         return self.client.put(
             self.path.format(organization, pipeline, build, job) + unblock, body=body
         )
