@@ -98,11 +98,12 @@ class Builds(Client):
             "created_to": created_to,
             "finished_from": finished_from,
             "state": self.__get_build_states_query_param(states),
-            "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
             "page": page,
         }
+        query_params.update(self.__process_meta_data(meta_data))
+
         return self.client.get(
             self.path_for_all, query_params, with_pagination=with_pagination
         )
@@ -148,11 +149,12 @@ class Builds(Client):
             "created_to": created_to,
             "finished_from": finished_from,
             "state": self.__get_build_states_query_param(states),
-            "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
             "page": page,
         }
+        query_params.update(self.__process_meta_data(meta_data))
+
         return self.client.get(
             self.path_by_org.format(organization),
             query_params,
@@ -202,11 +204,12 @@ class Builds(Client):
             "created_to": created_to,
             "finished_from": finished_from,
             "state": self.__get_build_states_query_param(states),
-            "meta_data": meta_data,
             "branch": branch,
             "commit": commit,
             "page": page,
         }
+        query_params.update(self.__process_meta_data(meta_data))
+
         return self.client.get(
             self.path_by_pipeline.format(organization, pipeline),
             query_params,
@@ -290,6 +293,10 @@ class Builds(Client):
             self.path_for_build_number.format(organization, pipeline, build_number)
             + rebuild
         )
+
+    @staticmethod
+    def __process_meta_data(meta_data):
+        return {f"meta_data[{name}]": value for name, value in meta_data.items()}
 
     @staticmethod
     def __validate_dates(datetimes):

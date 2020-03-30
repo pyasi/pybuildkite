@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pybuildkite",
-    version="0.0.5",
+    version="0.0.6",
     url="https://github.com/pyasi/pybuildkite",
     download_url="https://github.com/pyasi/pybuildkite/archive/master.zip",
     author="Peter Yasi",
@@ -17,4 +17,5 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords=["Buildkite", "Continuos Integration", "API", "CI", "wrapper", "python"],
+    install_requires=["requests"],
 )
