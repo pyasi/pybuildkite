@@ -1,3 +1,4 @@
+from posixpath import join as urljoin
 from pybuildkite.client import Client
 
 
@@ -14,7 +15,7 @@ class Agents(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + "organizations/{}/agents/"
+        self.path = urljoin(base_url, "organizations/{}/agents/")
 
     def list_all(
         self,
