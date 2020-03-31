@@ -21,8 +21,7 @@ class TestBuilds:
         """
         Verifies if url is created properly when using meta_data
         """
-        meta_data = {"key1": 1,
-                     "key2": "2"}
+        meta_data = {"key1": 1, "key2": "2"}
         builds = Builds(fake_client, "base")
         builds.list_all(meta_data=meta_data)
 
