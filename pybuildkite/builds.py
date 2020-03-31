@@ -296,7 +296,10 @@ class Builds(Client):
 
     @staticmethod
     def __process_meta_data(meta_data):
-        return {f"meta_data[{name}]": value for name, value in meta_data.items()}
+        if not meta_data:
+            return {}
+        else:
+            return {f"meta_data[{name}]": value for name, value in meta_data.items()}
 
     @staticmethod
     def __validate_dates(datetimes):
