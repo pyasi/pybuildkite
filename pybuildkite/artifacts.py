@@ -1,3 +1,4 @@
+from posixpath import join as urljoin
 from pybuildkite.client import Client
 
 
@@ -14,7 +15,7 @@ class Artifacts(Client):
         :param base_url: Base Url
         """
         self.client = client
-        self.path = base_url + "organizations/{}/pipelines/{}/builds/{}/"
+        self.path = urljoin(base_url, "organizations/{}/pipelines/{}/builds/{}/")
 
     def list_artifacts_for_build(self, organization, pipeline, build):
         """

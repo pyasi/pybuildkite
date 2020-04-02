@@ -24,7 +24,7 @@ class TestArtifacts:
         artifacts = Artifacts(fake_client, "base")
         artifacts.list_artifacts_for_build("org_slug", "pipe_slug", "build_no")
         url = (
-            "baseorganizations/org_slug/pipelines/pipe_slug/builds/build_no/artifacts/"
+            "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/artifacts/"
         )
         fake_client.get.assert_called_with(url)
 
@@ -34,7 +34,7 @@ class TestArtifacts:
         """
         artifacts = Artifacts(fake_client, "base")
         artifacts.list_artifacts_for_job("org_slug", "pipe_slug", "build_no", 123)
-        url = "baseorganizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/"
+        url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/"
         fake_client.get.assert_called_with(url)
 
     def test_get_artifact(self, fake_client):
@@ -43,7 +43,7 @@ class TestArtifacts:
         """
         artifacts = Artifacts(fake_client, "base")
         artifacts.get_artifact("org_slug", "pipe_slug", "build_no", 123, "artifact")
-        url = "baseorganizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/"
+        url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/"
         fake_client.get.assert_called_with(url)
 
     def test_download_artifact(self, fake_client):
@@ -54,5 +54,5 @@ class TestArtifacts:
         artifacts.download_artifact(
             "org_slug", "pipe_slug", "build_no", 123, "artifact"
         )
-        url = "baseorganizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/download/"
+        url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/download/"
         fake_client.get.assert_called_with(url)
