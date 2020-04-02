@@ -17,27 +17,27 @@ class Artifacts(Client):
         self.client = client
         self.path = urljoin(base_url, "organizations/{}/pipelines/{}/builds/{}/")
 
-    def list_artifacts_for_job(self, organization, pipeline, build):
+    def list_artifacts_for_build(self, organization, pipeline, build):
         """
-        Returns a paginated list of a job’s artifacts.
+        Returns a paginated list of a build's artifacts across all of its jobs.
 
         :param organization: organization slug
         :param pipeline: pipeline slug
         :param build: build number
-        :return: Returns a paginated list of a job’s artifacts.
+        :return: Returns a paginated list of a build’s artifacts across all of its jobs.
         """
         url = self.path + "artifacts/"
         return self.client.get(url.format(organization, pipeline, build))
 
-    def list_artifacts_for_build(self, organization, pipeline, build, job):
+    def list_artifacts_for_job(self, organization, pipeline, build, job):
         """
-        Returns a paginated list of a build’s artifacts across all of its jobs.
+        Returns a paginated list of a jobs's artifacts.
 
         :param organization: organization slug
         :param pipeline: pipeline slug
         :param build: build number
         :param job: job id
-        :return: Returns a paginated list of a build’s artifacts across all of its jobs.
+        :return: Returns a paginated list of a job’s artifacts.
         """
         url = self.path + "jobs/{}/artifacts/"
         return self.client.get(url.format(organization, pipeline, build, job))
