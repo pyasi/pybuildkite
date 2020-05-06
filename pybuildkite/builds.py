@@ -1,7 +1,13 @@
 import datetime
 from enum import Enum
-from pybuildkite.client import Client
 from typing import List
+
+from pybuildkite.client import Client
+from pybuildkite.exceptions import (
+    NotValidBuildState,
+    NotValidDateTime,
+    BuildStateNotAList,
+)
 
 
 class BuildState(Enum):
@@ -329,27 +335,3 @@ class Builds(Client):
             for state in states:
                 param_string += "state[]={}&".format(state.value)
             return param_string[:-1]
-
-
-class NotValidDateTime(Exception):
-    """
-    Raised when date is not a valid datetime.date
-    """
-
-    pass
-
-
-class NotValidBuildState(Exception):
-    """
-    Raised when state is not a valid BuildState
-    """
-
-    pass
-
-
-class BuildStateNotAList(Exception):
-    """
-    Raised when build state is not passed as a list
-    """
-
-    pass

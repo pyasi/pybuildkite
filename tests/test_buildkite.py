@@ -1,5 +1,6 @@
 import pytest
-from pybuildkite.buildkite import Buildkite, NoAcccessTokenException
+from pybuildkite.buildkite import Buildkite
+from pybuildkite.exceptions import NoAcccessTokenException
 
 
 class TestBuildkite:
