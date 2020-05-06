@@ -7,6 +7,8 @@ from pybuildkite.agents import Agents
 from pybuildkite.emojis import Emojis
 from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
+from pybuildkite.teams import Teams
+from pybuildkite.decorators import requires_token
 
 
 class Buildkite(object):
@@ -27,33 +29,6 @@ class Buildkite(object):
         :param access_token: The access token
         """
         self.client.set_client_access_token(access_token)
-
-    def requires_token(func):
-        """
-        This annotation protects API calls that require authentication.
-
-        It will cause them to raise NoAcccessTokenException if the token is not set in the client.
-
-        :return: Function decorated with the protection
-        """
-
-        def wrapper(self, *args, **kwargs):
-            """
-            Call func or raise NoAcccessTokenException if no access token is set
-
-            :param self:
-            :param args: Optional
-            :param kwargs: Optional
-
-            :raises NoAcccessTokenException: If no access token is set
-            :return:
-            """
-            if not self.client.is_access_token_set():
-                raise NoAcccessTokenException
-            else:
-                return func(self, *args, **kwargs)
-
-        return wrapper
 
     @requires_token
     def organizations(self):
@@ -121,10 +96,9 @@ class Buildkite(object):
         """
         return Artifacts(self.client, self.base_url)
 
-
-class NoAcccessTokenException(Exception):
-    """
-    Indicates that an access token was not set when it was required
-    """
-
-    pass
+    @requires_token
+    def teams(self):
+        """
+        Get Team operations for the Buildkite API
+        """
+        return Teams(self.client, self.base_url)

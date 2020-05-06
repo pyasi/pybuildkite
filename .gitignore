@@ -9,3 +9,5 @@ venv3/*
 /build/
 /pybuildkite.egg-info/
 .Python
+.mypy_cache/*
+pyvenv.cfg

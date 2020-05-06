@@ -5,3 +5,6 @@ steps:
 
   - label: ":pytest: Unit Tests"
     command: pytest
+
+  - label: ":mypy: Mypy"
+    command: mypy .
