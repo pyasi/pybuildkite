@@ -41,15 +41,15 @@ class TestResponse:
         "url,expected_output",
         [
             (
-                "https://api.buildkite.com/v2/organization/builds?access_token=F@keT0k3N&page=2&commit=SHA",
+                "https://api.buildkite.com/v2/organization/builds?page=2&commit=SHA",
                 2,
             ),
             (
-                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&page=5&commit=SHA",
+                "https://api.buildkite.com/v2/page/builds?page=5&commit=SHA",
                 5,
             ),
             (
-                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&commit=SHA",
+                "https://api.buildkite.com/v2/page/builds?commit=SHA",
                 0,
             ),
         ],
@@ -125,11 +125,11 @@ class TestClientRequest:
 
             client.request("GET", "http://www.google.com/")
 
-        expected_params = b"access_token=ABCDEF1234&per_page=100"
+        expected_params = b"per_page=100"
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers=None,
+            headers={"Authorization": "Bearer ABCDEF1234"},
             json=None,
             params=expected_params,
         )

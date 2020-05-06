@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import urlparse
 
 
 class Client(object):
@@ -52,8 +53,15 @@ class Client(object):
 
         query_params = self._clean_query_params(query_params or {})
 
+        headers_with_auth = headers
         if self.access_token:
-            query_params["access_token"] = self.access_token
+            if headers_with_auth is None:
+                headers_with_auth = {}
+            else:
+                # copy the dict so that the below logic for determining if json should
+                # be returned is correct
+                headers_with_auth = dict(headers)
+            headers_with_auth['Authorization'] = 'Bearer {}'.format(self.access_token)
 
         if body:
             body = self._clean_query_params(body)
@@ -62,7 +70,7 @@ class Client(object):
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method, url, headers=headers, params=str.encode(query_params), json=body
+            method, url, headers=headers_with_auth, params=str.encode(query_params), json=body
         )
 
         response.raise_for_status()
@@ -224,8 +232,10 @@ class Response:
         :param url: url to retrieve page from
         :return: int of page in url
         """
-        for segment in url.split("&"):
-            if "page" in segment and "api" not in segment:
-                segment, number = segment.split("=", 1)
-                return int(number)
+        parsed = urlparse(url)
+        query_string = parsed.query
+        for segment in query_string.split("&"):
+            key, value = segment.split("=", 1)
+            if key == "page":
+                return int(value)
         return 0
