@@ -61,7 +61,7 @@ class Client(object):
                 # copy the dict so that the below logic for determining if json should
                 # be returned is correct
                 headers_with_auth = dict(headers)
-            headers_with_auth['Authorization'] = 'Bearer {}'.format(self.access_token)
+            headers_with_auth["Authorization"] = "Bearer {}".format(self.access_token)
 
         if body:
             body = self._clean_query_params(body)
@@ -70,7 +70,11 @@ class Client(object):
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method, url, headers=headers_with_auth, params=str.encode(query_params), json=body
+            method,
+            url,
+            headers=headers_with_auth,
+            params=str.encode(query_params),
+            json=body,
         )
 
         response.raise_for_status()
