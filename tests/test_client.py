@@ -138,7 +138,7 @@ class TestClientRequest:
         client.set_client_access_token("ABCDEF1234")
 
         with patch("requests.request") as request:
-            request.return_value.json.return_value = {}
+            request.return_value.json.return_value = {"key": "value"}
 
             client.request("GET", "http://www.google.com/")
 
@@ -150,3 +150,26 @@ class TestClientRequest:
             json=None,
             params=expected_params,
         )
+
+    def test_request_should_return_json_when_no_header_provided(self):
+        """
+        Test that the requests response.json() decoding is returned when
+        no accept header is provided
+        """
+        client = Client()
+
+        with patch("requests.request") as request:
+            request.return_value.json.return_value = {"key": "value"}
+
+            ret = client.request("GET", "http://www.google.com/")
+
+        expected_params = b"per_page=100"
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={},
+            json=None,
+            params=expected_params,
+        )
+
+        assert ret == {"key": "value"}
