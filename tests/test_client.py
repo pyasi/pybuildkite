@@ -40,18 +40,9 @@ class TestResponse:
     @pytest.mark.parametrize(
         "url,expected_output",
         [
-            (
-                "https://api.buildkite.com/v2/organization/builds?page=2&commit=SHA",
-                2,
-            ),
-            (
-                "https://api.buildkite.com/v2/page/builds?page=5&commit=SHA",
-                5,
-            ),
-            (
-                "https://api.buildkite.com/v2/page/builds?commit=SHA",
-                0,
-            ),
+            ("https://api.buildkite.com/v2/organization/builds?page=2&commit=SHA", 2),
+            ("https://api.buildkite.com/v2/page/builds?page=5&commit=SHA", 5),
+            ("https://api.buildkite.com/v2/page/builds?commit=SHA", 0),
         ],
     )
     def test_getting_page_from_url(self, url, expected_output):
@@ -121,7 +112,11 @@ class TestClientRequest:
         with patch("requests.request") as request:
             request.return_value.text = "response text"
 
-            resp_text = client.request("GET", "http://www.google.com/", headers={"Accept": "application/fake_encoding"})
+            resp_text = client.request(
+                "GET",
+                "http://www.google.com/",
+                headers={"Accept": "application/fake_encoding"},
+            )
 
         expected_params = b"per_page=100"
         request.assert_called_once_with(
@@ -133,8 +128,6 @@ class TestClientRequest:
         )
 
         assert resp_text == "response text"
-
-
 
     def test_request_should_include_token_when_set(self):
         """
@@ -153,8 +146,10 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers={"Accept": "application/json",
-                "Authorization": "Bearer ABCDEF1234"},
+            headers={
+                "Accept": "application/json",
+                "Authorization": "Bearer ABCDEF1234",
+            },
             json=None,
             params=expected_params,
         )
