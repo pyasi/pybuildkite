@@ -16,11 +16,10 @@ class Users(Client):
         self.client = client
         self.path = base_url + "user"
 
-    def get_current_user(self, with_pagination: bool = False):
+    def get_current_user(self):
         """
-        Returns a list of all the teams for a given organization
+        Returns the current user
 
-        :param with_pagination: bool to return a response with pagination attributes
-        :return: Returns a list of all the teams for a given organization
+        :return: Returns current user
         """
         return self.client.get(self.path)
