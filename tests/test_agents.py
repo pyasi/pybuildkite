@@ -1,27 +1,13 @@
-from unittest.mock import Mock
-
 import pytest
 
 from pybuildkite.agents import Agents
 
 
-class TestAgents:
+def test_get_agent(fake_client):
     """
-    Test functionality of the Agents class
+    Test the get_agent method
     """
-
-    @pytest.fixture
-    def fake_client(self):
-        """
-        Build a fake API client
-        """
-        return Mock(get=Mock())
-
-    def test_get_agent(self, fake_client):
-        """
-        Test the get_agent method
-        """
-        agents = Agents(fake_client, "base")
-        agents.get_agent("org_slug", "agent_id")
-        url = "base/organizations/org_slug/agents/agent_id"
-        fake_client.get.assert_called_with(url)
+    agents = Agents(fake_client, "base")
+    agents.get_agent("org_slug", "agent_id")
+    url = "base/organizations/org_slug/agents/agent_id"
+    fake_client.get.assert_called_with(url)

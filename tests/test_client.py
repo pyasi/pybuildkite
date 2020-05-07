@@ -88,12 +88,12 @@ class TestClientRequest:
         Test that the access token is not included in the call to
         requests if it isn't actually set.
         """
-        client = Client()
+        fake_client = Client()
 
         with patch("requests.request") as request:
             request.return_value.json.return_value = {}
 
-            client.request("GET", "http://www.google.com/")
+            fake_client.request("GET", "http://www.google.com/")
 
         request.assert_called_once_with(
             "GET",
@@ -107,12 +107,12 @@ class TestClientRequest:
         """
         Test that the accept header is not overwritten and that text is returned
         """
-        client = Client()
+        fake_client = Client()
 
         with patch("requests.request") as request:
             request.return_value.text = "response text"
 
-            resp_text = client.request(
+            resp_text = fake_client.request(
                 "GET",
                 "http://www.google.com/",
                 headers={"Accept": "application/fake_encoding"},
@@ -129,39 +129,17 @@ class TestClientRequest:
 
         assert resp_text == "response text"
 
-    def test_request_should_include_token_when_set(self):
-        """
-        Test that the access token is not included in the call to
-        requests if it isn't actually set.
-        """
-        client = Client()
-        client.set_client_access_token("ABCDEF1234")
-
-        with patch("requests.request") as request:
-            request.return_value.json.return_value = {"key": "value"}
-
-            client.request("GET", "http://www.google.com/")
-
-        expected_params = b"per_page=100"
-        request.assert_called_once_with(
-            "GET",
-            "http://www.google.com/",
-            headers={"Authorization": "Bearer ABCDEF1234"},
-            json=None,
-            params=expected_params,
-        )
-
     def test_request_should_return_json_when_no_header_provided(self):
         """
         Test that the requests response.json() decoding is returned when
         no accept header is provided
         """
-        client = Client()
+        fake_client = Client()
 
         with patch("requests.request") as request:
             request.return_value.json.return_value = {"key": "value"}
 
-            ret = client.request("GET", "http://www.google.com/")
+            ret = fake_client.request("GET", "http://www.google.com/")
 
         expected_params = b"per_page=100"
         request.assert_called_once_with(
@@ -173,3 +151,25 @@ class TestClientRequest:
         )
 
         assert ret == {"key": "value"}
+
+    def test_request_should_include_token_when_set(self):
+        """
+        Test that the access token is not included in the call to
+        requests if it isn't actually set.
+        """
+        fake_client = Client()
+        fake_client.set_client_access_token("ABCDEF1234")
+
+        with patch("requests.request") as request:
+            request.return_value.json.return_value = {"key": "value"}
+
+            ret = fake_client.request("GET", "http://www.google.com/")
+
+        expected_params = b"per_page=100"
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={"Authorization": "Bearer ABCDEF1234"},
+            json=None,
+            params=expected_params,
+        )

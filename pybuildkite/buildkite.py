@@ -8,6 +8,7 @@ from pybuildkite.emojis import Emojis
 from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
 from pybuildkite.teams import Teams
+from pybuildkite.users import Users
 from pybuildkite.decorators import requires_token
 
 
@@ -102,3 +103,10 @@ class Buildkite(object):
         Get Team operations for the Buildkite API
         """
         return Teams(self.client, self.base_url)
+
+    @requires_token
+    def users(self):
+        """
+        Get User operations for the Buildkite API
+        """
+        return Users(self.client, self.base_url)
