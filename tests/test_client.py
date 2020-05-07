@@ -40,18 +40,9 @@ class TestResponse:
     @pytest.mark.parametrize(
         "url,expected_output",
         [
-            (
-                "https://api.buildkite.com/v2/organization/builds?access_token=F@keT0k3N&page=2&commit=SHA",
-                2,
-            ),
-            (
-                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&page=5&commit=SHA",
-                5,
-            ),
-            (
-                "https://api.buildkite.com/v2/page/builds?access_token=F@keT0k3N&commit=SHA",
-                0,
-            ),
+            ("https://api.buildkite.com/v2/organization/builds?page=2&commit=SHA", 2),
+            ("https://api.buildkite.com/v2/page/builds?page=5&commit=SHA", 5),
+            ("https://api.buildkite.com/v2/page/builds?commit=SHA", 0),
         ],
     )
     def test_getting_page_from_url(self, url, expected_output):
@@ -107,10 +98,36 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers=None,
+            headers={},
             json=None,
             params=b"per_page=100",
         )
+
+    def test_request_preserves_accept_header(self):
+        """
+        Test that the accept header is not overwritten and that text is returned
+        """
+        client = Client()
+
+        with patch("requests.request") as request:
+            request.return_value.text = "response text"
+
+            resp_text = client.request(
+                "GET",
+                "http://www.google.com/",
+                headers={"Accept": "application/fake_encoding"},
+            )
+
+        expected_params = b"per_page=100"
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={"Accept": "application/fake_encoding"},
+            json=None,
+            params=expected_params,
+        )
+
+        assert resp_text == "response text"
 
     def test_request_should_include_token_when_set(self):
         """
@@ -121,15 +138,38 @@ class TestClientRequest:
         client.set_client_access_token("ABCDEF1234")
 
         with patch("requests.request") as request:
-            request.return_value.json.return_value = {}
+            request.return_value.json.return_value = {"key": "value"}
 
             client.request("GET", "http://www.google.com/")
 
-        expected_params = b"access_token=ABCDEF1234&per_page=100"
+        expected_params = b"per_page=100"
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers=None,
+            headers={"Authorization": "Bearer ABCDEF1234"},
             json=None,
             params=expected_params,
         )
+
+    def test_request_should_return_json_when_no_header_provided(self):
+        """
+        Test that the requests response.json() decoding is returned when
+        no accept header is provided
+        """
+        client = Client()
+
+        with patch("requests.request") as request:
+            request.return_value.json.return_value = {"key": "value"}
+
+            ret = client.request("GET", "http://www.google.com/")
+
+        expected_params = b"per_page=100"
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={},
+            json=None,
+            params=expected_params,
+        )
+
+        assert ret == {"key": "value"}

@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import urlparse
 
 
 class Client(object):
@@ -33,7 +34,7 @@ class Client(object):
         url,
         query_params=None,
         body=None,
-        headers=None,
+        headers={},
         with_pagination=False,
     ):
         """
@@ -49,15 +50,16 @@ class Client(object):
         :param with_pagination: Bool to return a response with pagination attributes
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-
-        query_params = self._clean_query_params(query_params or {})
+        if headers is None:
+            raise ValueError("headers cannot be None")
 
         if self.access_token:
-            query_params["access_token"] = self.access_token
+            headers["Authorization"] = "Bearer {}".format(self.access_token)
 
         if body:
             body = self._clean_query_params(body)
 
+        query_params = self._clean_query_params(query_params or {})
         query_params["per_page"] = "100"
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
@@ -72,7 +74,7 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        if headers == None or headers.get("Accept") == "application/json":
+        if headers.get("Accept") is None or headers.get("Accept") == "application/json":
             return response.json()
         else:
             return response.text
@@ -87,7 +89,7 @@ class Client(object):
         response_object.append_pagination_data(response.headers)
         return response_object
 
-    def get(self, url, query_params=None, headers=None, with_pagination=False):
+    def get(self, url, query_params=None, headers={}, with_pagination=False):
         """
         Make a GET request to the API
 
@@ -107,7 +109,7 @@ class Client(object):
             with_pagination=with_pagination,
         )
 
-    def post(self, url, body=None, headers=None, query_params=None):
+    def post(self, url, body=None, headers={}, query_params=None):
         """
         Make a POST request to the API
 
@@ -124,7 +126,7 @@ class Client(object):
             "POST", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def put(self, url, body=None, headers=None, query_params=None):
+    def put(self, url, body=None, headers={}, query_params=None):
         """
         Make a PUT request to the API
 
@@ -141,7 +143,7 @@ class Client(object):
             "PUT", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def delete(self, url, body=None, headers=None, query_params=None):
+    def delete(self, url, body=None, headers={}, query_params=None):
         """
         Make a DELETE request to the API
 
@@ -224,8 +226,10 @@ class Response:
         :param url: url to retrieve page from
         :return: int of page in url
         """
-        for segment in url.split("&"):
-            if "page" in segment and "api" not in segment:
-                segment, number = segment.split("=", 1)
-                return int(number)
+        parsed = urlparse(url)
+        query_string = parsed.query
+        for segment in query_string.split("&"):
+            key, value = segment.split("=", 1)
+            if key == "page":
+                return int(value)
         return 0
