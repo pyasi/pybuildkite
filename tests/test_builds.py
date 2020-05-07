@@ -5,39 +5,28 @@ import pytest
 from pybuildkite.builds import Builds
 
 
-class TestBuilds:
+def test_meta_data_url(fake_client):
     """
-    Test functionality of the Builds class
+    Verifies if url is created properly when using meta_data
     """
+    meta_data = {"key1": 1, "key2": "2"}
+    builds = Builds(fake_client, "base")
+    builds.list_all(meta_data=meta_data)
 
-    @pytest.fixture
-    def fake_client(self):
-        """
-        Build a fake API client
-        """
-        return Mock(get=Mock())
+    name, args, kwargs = fake_client.method_calls[-1]
+    _, query_params = args
+    assert query_params["meta_data[key1]"] == 1
+    assert query_params["meta_data[key2]"] == "2"
 
-    def test_meta_data_url(self, fake_client):
-        """
-        Verifies if url is created properly when using meta_data
-        """
-        meta_data = {"key1": 1, "key2": "2"}
-        builds = Builds(fake_client, "base")
-        builds.list_all(meta_data=meta_data)
 
-        name, args, kwargs = fake_client.method_calls[-1]
-        _, query_params = args
-        assert query_params["meta_data[key1]"] == 1
-        assert query_params["meta_data[key2]"] == "2"
+def test_no_meta_data_url(fake_client):
+    """
+    Verifies if url is created properly when using meta_data
+    """
+    builds = Builds(fake_client, "base")
+    builds.list_all()
 
-    def test_no_meta_data_url(self, fake_client):
-        """
-        Verifies if url is created properly when using meta_data
-        """
-        builds = Builds(fake_client, "base")
-        builds.list_all()
-
-        name, args, kwargs = fake_client.method_calls[-1]
-        _, query_params = args
-        for key in query_params:
-            assert "meta_data" not in key
+    name, args, kwargs = fake_client.method_calls[-1]
+    _, query_params = args
+    for key in query_params:
+        assert "meta_data" not in key
