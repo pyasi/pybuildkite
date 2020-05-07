@@ -11,3 +11,5 @@ venv3/*
 .Python
 .mypy_cache/*
 pyvenv.cfg
+.coverage
+coverage/*
