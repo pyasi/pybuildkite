@@ -107,7 +107,7 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers=None,
+            headers={},
             json=None,
             params=b"per_page=100",
         )

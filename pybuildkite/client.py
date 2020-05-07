@@ -34,7 +34,7 @@ class Client(object):
         url,
         query_params=None,
         body=None,
-        headers=None,
+        headers={},
         with_pagination=False,
     ):
         """
@@ -50,18 +50,12 @@ class Client(object):
         :param with_pagination: Bool to return a response with pagination attributes
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
+        number_of_passed_in_headers = 0 if headers is None else len(headers)
 
         query_params = self._clean_query_params(query_params or {})
 
-        headers_with_auth = headers
-        if self.access_token:
-            if headers_with_auth is None:
-                headers_with_auth = {}
-            else:
-                # copy the dict so that the below logic for determining if json should
-                # be returned is correct
-                headers_with_auth = dict(headers)
-            headers_with_auth["Authorization"] = "Bearer {}".format(self.access_token)
+        if self.access_token and headers is not None:
+            headers["Authorization"] = "Bearer {}".format(self.access_token)
 
         if body:
             body = self._clean_query_params(body)
@@ -70,11 +64,7 @@ class Client(object):
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method,
-            url,
-            headers=headers_with_auth,
-            params=str.encode(query_params),
-            json=body,
+            method, url, headers=headers, params=str.encode(query_params), json=body
         )
 
         response.raise_for_status()
@@ -84,7 +74,10 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        if headers == None or headers.get("Accept") == "application/json":
+        if (
+            number_of_passed_in_headers == 0
+            or headers.get("Accept") == "application/json"
+        ):
             return response.json()
         else:
             return response.text
@@ -99,7 +92,7 @@ class Client(object):
         response_object.append_pagination_data(response.headers)
         return response_object
 
-    def get(self, url, query_params=None, headers=None, with_pagination=False):
+    def get(self, url, query_params=None, headers={}, with_pagination=False):
         """
         Make a GET request to the API
 
@@ -119,7 +112,7 @@ class Client(object):
             with_pagination=with_pagination,
         )
 
-    def post(self, url, body=None, headers=None, query_params=None):
+    def post(self, url, body=None, headers={}, query_params=None):
         """
         Make a POST request to the API
 
@@ -136,7 +129,7 @@ class Client(object):
             "POST", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def put(self, url, body=None, headers=None, query_params=None):
+    def put(self, url, body=None, headers={}, query_params=None):
         """
         Make a PUT request to the API
 
@@ -153,7 +146,7 @@ class Client(object):
             "PUT", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def delete(self, url, body=None, headers=None, query_params=None):
+    def delete(self, url, body=None, headers={}, query_params=None):
         """
         Make a DELETE request to the API
 
