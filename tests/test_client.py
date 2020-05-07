@@ -98,7 +98,7 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers={"Accept": "application/json"},
+            headers={},
             json=None,
             params=b"per_page=100",
         )
@@ -146,10 +146,7 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers={
-                "Accept": "application/json",
-                "Authorization": "Bearer ABCDEF1234",
-            },
+            headers={"Authorization": "Bearer ABCDEF1234"},
             json=None,
             params=expected_params,
         )

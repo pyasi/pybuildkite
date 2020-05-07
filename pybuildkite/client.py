@@ -53,9 +53,6 @@ class Client(object):
         if headers is None:
             raise ValueError("headers cannot be None")
 
-        if not headers.get("Accept"):
-            headers["Accept"] = "application/json"
-
         if self.access_token:
             headers["Authorization"] = "Bearer {}".format(self.access_token)
 
@@ -77,7 +74,7 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        if headers.get("Accept") == "application/json":
+        if headers.get("Accept") is None or headers.get("Accept") == "application/json":
             return response.json()
         else:
             return response.text
