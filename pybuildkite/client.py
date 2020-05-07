@@ -50,16 +50,19 @@ class Client(object):
         :param with_pagination: Bool to return a response with pagination attributes
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
-        number_of_passed_in_headers = 0 if headers is None else len(headers)
+        if headers is None:
+            raise ValueError("headers cannot be None")
 
-        query_params = self._clean_query_params(query_params or {})
+        if not headers.get("Accept"):
+            headers["Accept"] = "application/json"
 
-        if self.access_token and headers is not None:
+        if self.access_token:
             headers["Authorization"] = "Bearer {}".format(self.access_token)
 
         if body:
             body = self._clean_query_params(body)
 
+        query_params = self._clean_query_params(query_params or {})
         query_params["per_page"] = "100"
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
@@ -74,10 +77,7 @@ class Client(object):
             return response
         if method == "DELETE":
             return response.ok
-        if (
-            number_of_passed_in_headers == 0
-            or headers.get("Accept") == "application/json"
-        ):
+        if headers.get("Accept") == "application/json":
             return response.json()
         else:
             return response.text

@@ -107,10 +107,34 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers={},
+            headers={"Accept": "application/json"},
             json=None,
             params=b"per_page=100",
         )
+
+    def test_request_preserves_accept_header(self):
+        """
+        Test that the accept header is not overwritten and that text is returned
+        """
+        client = Client()
+
+        with patch("requests.request") as request:
+            request.return_value.text = "response text"
+
+            resp_text = client.request("GET", "http://www.google.com/", headers={"Accept": "application/fake_encoding"})
+
+        expected_params = b"per_page=100"
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={"Accept": "application/fake_encoding"},
+            json=None,
+            params=expected_params,
+        )
+
+        assert resp_text == "response text"
+
+
 
     def test_request_should_include_token_when_set(self):
         """
@@ -129,7 +153,8 @@ class TestClientRequest:
         request.assert_called_once_with(
             "GET",
             "http://www.google.com/",
-            headers={"Authorization": "Bearer ABCDEF1234"},
+            headers={"Accept": "application/json",
+                "Authorization": "Bearer ABCDEF1234"},
             json=None,
             params=expected_params,
         )
