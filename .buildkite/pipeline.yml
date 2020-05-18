@@ -4,7 +4,7 @@ steps:
     command: black --check .
 
   - label: ":pytest: Unit Tests"
-    command: pytest
+    command: pytest && coveralls
 
   - label: ":mypy: Mypy"
     command: mypy .

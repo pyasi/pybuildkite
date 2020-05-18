@@ -14,3 +14,5 @@ pyvenv.cfg
 .coverage
 coverage/*
 .pytest_cache/*
+Pipfile
+coverage.xml
