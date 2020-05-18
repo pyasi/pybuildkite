@@ -13,3 +13,4 @@ venv3/*
 pyvenv.cfg
 .coverage
 coverage/*
+.pytest_cache/*
