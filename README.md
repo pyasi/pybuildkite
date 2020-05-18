@@ -1,4 +1,4 @@
-# PyBuildkite   <img src="https://badge.fury.io/py/pybuildkite.svg" alt="pypi">     <img src="https://img.shields.io/pypi/dm/pybuildkite.svg" alt="pypi">
+# PyBuildkite  [![Build status](https://badge.buildkite.com/89bf10df4492f2f2d61ca707078828824fec3b08cb85192e6d.svg)](https://buildkite.com/pybuildkite/pybuildkite) <img src="https://badge.fury.io/py/pybuildkite.svg" alt="pypi">     <img src="https://img.shields.io/pypi/dm/pybuildkite.svg" alt="pypi">
 
 A [Python](https://www.python.org/) library and client for the [Buildkite API](https://buildkite.com/docs/api).
 

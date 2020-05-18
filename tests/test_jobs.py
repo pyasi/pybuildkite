@@ -55,15 +55,16 @@ def test_retry_job(fake_client):
         jobs.path.format("org_slug", "pipe_slug", "build_no", 123) + "/retry"
     )
 
+
 def test_unblock_job(fake_client):
     jobs = Jobs(fake_client, "base")
     jobs.unblock_job("org_slug", "pipe_slug", "build_no", 123, "name")
     fake_client.put.assert_called_with(
-        jobs.path.format("org_slug", "pipe_slug", "build_no", 123) + "/unblock", body={
-            "fields": "name",
-            "unblocker": None
-        }
+        jobs.path.format("org_slug", "pipe_slug", "build_no", 123) + "/unblock",
+        body={"fields": "name", "unblocker": None},
     )
+
+
 def test_delete_job_log(fake_client):
     jobs = Jobs(fake_client, "base")
     jobs.delete_job_log("org_slug", "pipe_slug", "build_no", 123)
