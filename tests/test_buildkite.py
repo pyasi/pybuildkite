@@ -1,5 +1,16 @@
 import pytest
-from pybuildkite.buildkite import Buildkite
+from pybuildkite.buildkite import (
+    Buildkite,
+    Pipelines,
+    Agents,
+    Builds,
+    Jobs,
+    Emojis,
+    Annotations,
+    Artifacts,
+    Teams,
+    Users,
+)
 from pybuildkite.exceptions import NoAcccessTokenException
 
 
@@ -19,3 +30,24 @@ def test_access_token_set():
     buildkite = Buildkite()
     buildkite.set_access_token("FAKE-ACCESS-TOKEN")
     assert buildkite.agents()
+
+
+@pytest.mark.parametrize(
+    "function, expected_type",
+    [
+        (Buildkite().pipelines, Pipelines),
+        (Buildkite().builds, Builds),
+        (Buildkite().jobs, Jobs),
+        (Buildkite().agents, Agents),
+        (Buildkite().emojis, Emojis),
+        (Buildkite().artifacts, Artifacts),
+        (Buildkite().teams, Teams),
+        (Buildkite().users, Users),
+    ],
+)
+def test_eval(function, expected_type):
+    # buildkite = Buildkite()
+    # buildkite.set_access_token("FAKE-ACCESS-TOKEN")
+    function.__self__.set_access_token("FAKE-ACCESS-TOKEN")
+    pipelines = function()
+    assert isinstance(pipelines, expected_type)
