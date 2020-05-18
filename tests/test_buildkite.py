@@ -10,6 +10,7 @@ from pybuildkite.buildkite import (
     Artifacts,
     Teams,
     Users,
+    Organizations,
 )
 from pybuildkite.exceptions import NoAcccessTokenException
 
@@ -43,6 +44,8 @@ def test_access_token_set():
         (Buildkite().artifacts, Artifacts),
         (Buildkite().teams, Teams),
         (Buildkite().users, Users),
+        (Buildkite().annotations, Annotations),
+        (Buildkite().organizations, Organizations),
     ],
 )
 def test_eval(function, expected_type):
