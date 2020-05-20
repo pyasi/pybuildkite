@@ -16,3 +16,4 @@ coverage/*
 .pytest_cache/*
 Pipfile
 coverage.xml
+package_and_upload.sh

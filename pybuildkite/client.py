@@ -72,8 +72,11 @@ class Client(object):
         if with_pagination:
             response = self._get_paginated_response(response)
             return response
-        if (method == "DELETE" or response.status_code == 204 or
-                response.headers.get('content-type') is None):
+        if (
+            method == "DELETE"
+            or response.status_code == 204
+            or response.headers.get("content-type") is None
+        ):
             return response.ok
         if headers.get("Accept") is None or headers.get("Accept") == "application/json":
             return response.json()
