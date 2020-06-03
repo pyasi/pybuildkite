@@ -1,10 +1,24 @@
+.docker-plugin: &docker-plugin
+  plugins:
+    - docker#v3.5.0:
+        image: "python:3.8"
+
 steps:
 
   - label: ":python-black: Lint Black"
-    command: black --check .
-
-  - label: ":pytest: Unit Tests"
-    command: pytest && coveralls
+    commands: 
+      - pip install -r requirements.txt
+      - black --check .
+    <<: *docker-plugin
 
   - label: ":mypy: Mypy"
-    command: mypy .
+    commands: 
+      - pip install -r requirements.txt
+      - mypy .
+    <<: *docker-plugin
+
+  - label: ":pytest: Unit Tests"
+    commands: 
+      - pip install -r requirements.txt
+      - pytest
+    <<: *docker-plugin
