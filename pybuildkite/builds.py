@@ -305,7 +305,9 @@ class Builds(Client):
         if not meta_data:
             return {}
         else:
-            return {"meta_data[{}]".format(name): value for name, value in meta_data.items()}
+            return {"meta_data[{}]".format(
+                name): value for name, value in meta_data.items()
+            }
 
     @staticmethod
     def __validate_dates(datetimes):
