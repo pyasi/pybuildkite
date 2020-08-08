@@ -24,7 +24,7 @@ buildkite.set_access_token('YOUR_API_ACCESS_TOKEN_HERE')
 org = buildkite.organizations().get_org('my-org')
 
 # Get all running and scheduled builds for a particular pipeline
-builds = buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', states=[BuildState.RUNNING, Buildstate.SCHEDULED])
+builds = buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', states=[BuildState.RUNNING, BuildState.SCHEDULED])
 
 # Create a build
 buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master', 
