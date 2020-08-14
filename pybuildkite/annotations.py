@@ -16,7 +16,9 @@ class Annotations(Client):
         self.client = client
         self.path = base_url + "organizations/{}/pipelines/{}/builds/{}/annotations/"
 
-    def list_annotations(self, organization, pipeline, build):
+    def list_annotations(
+        self, organization, pipeline, build, page=0, with_pagination=False
+    ):
         """
         Returns a paginated list of the user’s annotations.
 
@@ -25,4 +27,9 @@ class Annotations(Client):
         :param build: build number
         :return: Returns a paginated list of the user’s annotations.
         """
-        return self.client.get(self.path.format(organization, pipeline, build))
+        query_params = {"page": page}
+        return self.client.get(
+            self.path.format(organization, pipeline, build),
+            query_params=query_params,
+            with_pagination=with_pagination,
+        )
