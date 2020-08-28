@@ -56,18 +56,22 @@ class Artifacts(Client):
         url = self.path + "jobs/{}/artifacts/{}/"
         return self.client.get(url.format(organization, pipeline, build, job, artifact))
 
-    def download_artifact(self, organization, pipeline, build, job, artifact):
+    def download_artifact(self, organization, pipeline, build, job, artifact, as_stream=False):
         """
-        Returns a URL for downloading an artifact.
+        Returns the content of an artifact as bytes.
+
+        With as_stream=True you get an iterator of bytes chunks.
 
         :param organization: organization slug
         :param pipeline: pipeline slug
         :param build: build number
         :param job: job id
         :param artifact: artifact id
-        :return: Returns a URL for downloading an artifact.
+        :param as_stream: stream the artifact content
+        :return: Returns the content of an artifact.
         """
+        headers = {"Accept": "application/octet-stream"}
         url = self.path + "jobs/{}/artifacts/{}/download/"
-        return self.client.get(url.format(organization, pipeline, build, job, artifact))
+        return self.client.get(url.format(organization, pipeline, build, job, artifact), headers=headers, as_stream=as_stream)
 
     # TODO Delete artifact
