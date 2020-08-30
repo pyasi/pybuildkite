@@ -56,7 +56,9 @@ class Artifacts(Client):
         url = self.path + "jobs/{}/artifacts/{}/"
         return self.client.get(url.format(organization, pipeline, build, job, artifact))
 
-    def download_artifact(self, organization, pipeline, build, job, artifact, as_stream=False):
+    def download_artifact(
+        self, organization, pipeline, build, job, artifact, as_stream=False
+    ):
         """
         Returns the content of an artifact as bytes.
 
@@ -72,6 +74,10 @@ class Artifacts(Client):
         """
         headers = {"Accept": "application/octet-stream"}
         url = self.path + "jobs/{}/artifacts/{}/download/"
-        return self.client.get(url.format(organization, pipeline, build, job, artifact), headers=headers, as_stream=as_stream)
+        return self.client.get(
+            url.format(organization, pipeline, build, job, artifact),
+            headers=headers,
+            as_stream=as_stream,
+        )
 
     # TODO Delete artifact

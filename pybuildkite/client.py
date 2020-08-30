@@ -71,7 +71,12 @@ class Client(object):
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method, url, headers=headers, params=str.encode(query_params), json=body, stream=as_stream
+            method,
+            url,
+            headers=headers,
+            params=str.encode(query_params),
+            json=body,
+            stream=as_stream,
         )
 
         response.raise_for_status()
@@ -102,7 +107,9 @@ class Client(object):
         response_object.append_pagination_data(response.headers)
         return response_object
 
-    def get(self, url, query_params=None, headers={}, with_pagination=False, as_stream=False):
+    def get(
+        self, url, query_params=None, headers={}, with_pagination=False, as_stream=False
+    ):
         """
         Make a GET request to the API
 
@@ -121,7 +128,7 @@ class Client(object):
             query_params=query_params,
             headers=headers,
             with_pagination=with_pagination,
-            as_stream=as_stream
+            as_stream=as_stream,
         )
 
     def post(self, url, body=None, headers={}, query_params=None):
