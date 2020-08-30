@@ -4,7 +4,7 @@
 A [Python](https://www.python.org/) library and client for the [Buildkite API](https://buildkite.com/docs/api).
 
 
-# Usage
+## Usage
 
 To get the package, execute:
 
@@ -45,7 +45,32 @@ while builds_response.next_page:
     builds_response = buildkite.builds().list_all(page=builds_response.next_page, with_pagination=True)
 ```
 
+## Artifacts
 
-# License
+Artifacts can be downloaded as binary data. The following example loads the artifact into memory as
+[Python bytes](https://docs.python.org/3/library/stdtypes.html#binary-sequence-types-bytes-bytearray-memoryview)
+and then writes them to disc:
+
+```python
+artifacts = buildkite.artifacts()
+artifact = artifacts.download_artifact("org_slug", "pipe_slug", "build_no", 123, "artifact")
+with open('artifact.bin', 'b') as f:
+  f.write(artifact)
+```
+
+Large artifacts should be streamed as chunks of bytes to limit the memory consumption:
+```python
+stream = artifacts.download_artifact("org_slug", "pipe_slug", "build_no", 123, "artifact", as_stream=True)
+with open('artifact.bin', 'b') as f:
+  for chunk in stream:
+    f.write(chunk)
+```
+
+A unicode text artifact can be turned into a string easily:
+```python
+text = str(artifact)
+```
+
+## License
 
 This library is distributed under the BSD-style license found in the LICENSE file.
