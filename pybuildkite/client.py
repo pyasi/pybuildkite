@@ -36,11 +36,17 @@ class Client(object):
         body=None,
         headers={},
         with_pagination=False,
+        as_stream=False,
     ):
         """
         Make a request to the API
 
-        The request will be authorised if the access token is set
+        The request will be authorised if the access token is set.
+
+        With no accept header set or if set to "application/json",
+        the response will be parsed as Json and returned as a dict.
+        With any other accept header, the response will be returned as bytes.
+        With as_stream=True you will get an iterator of bytes chunks instead.
 
         :param method: HTTP method to use
         :param url: URL to call
@@ -48,7 +54,8 @@ class Client(object):
         :param body: Body of the request
         :param headers: Dictionary of headers to use in HTTP request
         :param with_pagination: Bool to return a response with pagination attributes
-        :return: If headers are set response text is returned, otherwise parsed response is returned
+        :param as_stream: Bool to stream the bytes response
+        :return: response return as parsed json, bytes or bytes chunks iterator
         """
         if headers is None:
             raise ValueError("headers cannot be None")
@@ -64,7 +71,12 @@ class Client(object):
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
-            method, url, headers=headers, params=str.encode(query_params), json=body
+            method,
+            url,
+            headers=headers,
+            params=str.encode(query_params),
+            json=body,
+            stream=as_stream,
         )
 
         response.raise_for_status()
@@ -80,8 +92,10 @@ class Client(object):
             return response.ok
         if headers.get("Accept") is None or headers.get("Accept") == "application/json":
             return response.json()
+        elif as_stream:
+            return response.iter_content(chunk_size=None, decode_unicode=False)
         else:
-            return response.text
+            return response.content
 
     def _get_paginated_response(self, response):
         """
@@ -93,7 +107,9 @@ class Client(object):
         response_object.append_pagination_data(response.headers)
         return response_object
 
-    def get(self, url, query_params=None, headers={}, with_pagination=False):
+    def get(
+        self, url, query_params=None, headers={}, with_pagination=False, as_stream=False
+    ):
         """
         Make a GET request to the API
 
@@ -103,6 +119,7 @@ class Client(object):
         :param query_params: Query parameters to append to URL
         :param headers: Dictionary of headers to use in HTTP request
         :param with_pagination: Bool to return a response with pagination attributes
+        :param as_stream: Bool to stream the response
         :return: If headers are set response text is returned, otherwise parsed response is returned
         """
         return self.request(
@@ -111,6 +128,7 @@ class Client(object):
             query_params=query_params,
             headers=headers,
             with_pagination=with_pagination,
+            as_stream=as_stream,
         )
 
     def post(self, url, body=None, headers={}, query_params=None):
