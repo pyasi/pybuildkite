@@ -84,3 +84,48 @@ class Pipelines(Client):
         """
         url = self.path.format(organization) + pipeline
         return self.client.delete(url)
+
+    def update_pipeline(
+        self,
+        organization,
+        pipeline,
+        branch_configuration: str = None,
+        cancel_running_branch_builds: bool = None,
+        cancel_running_branch_builds_filter: str = None,
+        default_branch: str = None,
+        description: str = None,
+        env: dict = None,
+        name: str = None,
+        provider_settings: dict = None,
+        repository: str = None,
+        steps: dict = None,
+        skip_queued_branch_builds: bool = None,
+        skip_queued_branch_builds_filter: str = None,
+        visibility: str = None,
+    ):
+        """
+        Patch a pipeline. 
+        See https://buildkite.com/docs/apis/rest-api/pipelines#update-a-pipeline 
+        for documentation on each input
+
+        :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :return: Pipeline
+        """
+        body = {
+            "branch_configuration": branch_configuration,
+            "cancel_running_branch_builds": cancel_running_branch_builds,
+            "cancel_running_branch_builds_filter": cancel_running_branch_builds_filter,
+            "default_branch": default_branch,
+            "description": description,
+            "env": env,
+            "name": name,
+            "provider_settings": provider_settings,
+            "repository": repository,
+            "steps": steps,
+            "skip_queued_branch_builds": skip_queued_branch_builds,
+            "skip_queued_branch_builds_filter": skip_queued_branch_builds_filter,
+            "visibility": visibility,
+        }
+        url = self.path.format(organization) + pipeline
+        return self.client.patch(url, body=body)
