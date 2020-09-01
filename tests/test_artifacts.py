@@ -40,7 +40,9 @@ def test_download_artifact(fake_client):
     artifacts = Artifacts(fake_client, "base")
     artifacts.download_artifact("org_slug", "pipe_slug", "build_no", 123, "artifact")
     url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/download/"
-    fake_client.get.assert_called_with(url, headers={"Accept": "application/octet-stream"}, as_stream=False)
+    fake_client.get.assert_called_with(
+        url, headers={"Accept": "application/octet-stream"}, as_stream=False
+    )
 
 
 def test_download_artifact_as_stream(fake_client):
@@ -48,6 +50,10 @@ def test_download_artifact_as_stream(fake_client):
     Test download Artifact as stream
     """
     artifacts = Artifacts(fake_client, "base")
-    artifacts.download_artifact("org_slug", "pipe_slug", "build_no", 123, "artifact", as_stream=True)
+    artifacts.download_artifact(
+        "org_slug", "pipe_slug", "build_no", 123, "artifact", as_stream=True
+    )
     url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/artifact/download/"
-    fake_client.get.assert_called_with(url, headers={"Accept": "application/octet-stream"}, as_stream=True)
+    fake_client.get.assert_called_with(
+        url, headers={"Accept": "application/octet-stream"}, as_stream=True
+    )

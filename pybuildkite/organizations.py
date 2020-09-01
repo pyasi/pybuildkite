@@ -19,7 +19,7 @@ class Organizations(Client):
     def list_all(self, page=0, with_pagination=False):
         """
         Returns a paginated list of the user’s organizations.
-        
+
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
         :return: Paginated list of the user’s organizations.

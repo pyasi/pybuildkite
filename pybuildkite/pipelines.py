@@ -84,3 +84,12 @@ class Pipelines(Client):
         """
         url = self.path.format(organization) + pipeline
         return self.client.delete(url)
+
+    def update_pipeline(self, organization, pipeline):
+        """
+        """
+        body = {
+            "description": "'CI Pipeline for the PyBuildkite wrapper"
+        }
+        url = self.path.format(organization) + pipeline
+        return self.client.patch(url, body=body)

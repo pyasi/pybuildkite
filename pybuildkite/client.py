@@ -182,6 +182,13 @@ class Client(object):
             "DELETE", url=url, query_params=query_params, body=body, headers=headers
         )
 
+    def patch(self, url, body=None, headers={}, query_params=None):
+        """
+        """
+        return self.request(
+            "PATCH", url=url, query_params=query_params, body=body, headers=headers
+        )
+
     @staticmethod
     def _clean_query_params(query_params):
         """

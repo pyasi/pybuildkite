@@ -139,7 +139,11 @@ class TestClientRequest:
         fake_client = Client()
 
         with patch("requests.request") as request:
-            request.return_value.iter_content.return_value = [b"response", b" ", b"text"]
+            request.return_value.iter_content.return_value = [
+                b"response",
+                b" ",
+                b"text",
+            ]
 
             resp = fake_client.request(
                 "GET",
@@ -173,7 +177,9 @@ class TestClientRequest:
         with patch("requests.request") as request:
             request.return_value.json.return_value = {"key": "value"}
 
-            resp = fake_client.request("GET", "http://www.google.com/", headers={"Accept": "application/json"})
+            resp = fake_client.request(
+                "GET", "http://www.google.com/", headers={"Accept": "application/json"}
+            )
 
         expected_params = b"per_page=100"
         request.assert_called_once_with(
