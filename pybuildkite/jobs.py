@@ -82,7 +82,7 @@ class Jobs(Client):
     def unblock_job(self, organization, pipeline, build, job, fields, unblocker=None):
         """
         Unblocks a build’s "Block pipeline" job.
-         :param organization: Organization slug
+        :param organization: Organization slug
         :param pipeline: Pipeline slug
         :param build: Build number
         :param job: Job id

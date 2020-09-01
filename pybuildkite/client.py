@@ -183,7 +183,17 @@ class Client(object):
         )
 
     def patch(self, url, body=None, headers={}, query_params=None):
-        """"""
+        """
+        Make a PATCH request to the API
+
+        The request will be authorised if the access token is set
+
+        :param url: URL to call
+        :param body: Body of the request
+        :param query_params: Query parameters to append to URL
+        :param headers: Dictionary of headers to use in HTTP request
+        :return: If headers are set response text is returned, otherwise parsed response is returned
+        """
         return self.request(
             "PATCH", url=url, query_params=query_params, body=body, headers=headers
         )
