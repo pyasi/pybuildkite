@@ -61,3 +61,32 @@ def test_delete_pipeline(fake_client):
     fake_client.delete.assert_called_with(
         pipeline.path.format("test_org") + "test_pipeline"
     )
+
+
+def test_update_pipeline(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.update_pipeline(
+        "test_org",
+        "test_pipeline",
+        name="Name Change Test",
+        env={"TEST_ENV_VAR": "VALUE"},
+        skip_queued_branch_builds=True,
+    )
+    fake_client.patch.assert_called_with(
+        pipeline.path.format("test_org") + "test_pipeline",
+        body={
+            "branch_configuration": None,
+            "cancel_running_branch_builds": None,
+            "cancel_running_branch_builds_filter": None,
+            "default_branch": None,
+            "description": None,
+            "env": {"TEST_ENV_VAR": "VALUE"},
+            "name": "Name Change Test",
+            "provider_settings": None,
+            "repository": None,
+            "steps": None,
+            "skip_queued_branch_builds": True,
+            "skip_queued_branch_builds_filter": None,
+            "visibility": None,
+        },
+    )
