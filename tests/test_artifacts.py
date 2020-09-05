@@ -10,7 +10,9 @@ def test_list_artifacts_for_build(fake_client):
     artifacts = Artifacts(fake_client, "base")
     artifacts.list_artifacts_for_build("org_slug", "pipe_slug", "build_no")
     url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/artifacts/"
-    fake_client.get.assert_called_with(url)
+    fake_client.get.assert_called_with(
+        url, query_params={"page": 0}, with_pagination=False
+    )
 
 
 def test_list_artifacts_for_job(fake_client):
@@ -20,7 +22,9 @@ def test_list_artifacts_for_job(fake_client):
     artifacts = Artifacts(fake_client, "base")
     artifacts.list_artifacts_for_job("org_slug", "pipe_slug", "build_no", 123)
     url = "base/organizations/org_slug/pipelines/pipe_slug/builds/build_no/jobs/123/artifacts/"
-    fake_client.get.assert_called_with(url)
+    fake_client.get.assert_called_with(
+        url, query_params={"page": 0}, with_pagination=False
+    )
 
 
 def test_get_artifact(fake_client):

@@ -17,19 +17,30 @@ class Artifacts(Client):
         self.client = client
         self.path = urljoin(base_url, "organizations/{}/pipelines/{}/builds/{}/")
 
-    def list_artifacts_for_build(self, organization, pipeline, build):
+    def list_artifacts_for_build(
+        self, organization, pipeline, build, page=0, with_pagination=False
+    ):
         """
         Returns a paginated list of a build's artifacts across all of its jobs.
 
         :param organization: organization slug
         :param pipeline: pipeline slug
         :param build: build number
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of a build’s artifacts across all of its jobs.
         """
         url = self.path + "artifacts/"
-        return self.client.get(url.format(organization, pipeline, build))
+        query_params = {"page": page}
+        return self.client.get(
+            url.format(organization, pipeline, build),
+            query_params=query_params,
+            with_pagination=with_pagination,
+        )
 
-    def list_artifacts_for_job(self, organization, pipeline, build, job):
+    def list_artifacts_for_job(
+        self, organization, pipeline, build, job, page=0, with_pagination=False
+    ):
         """
         Returns a paginated list of a jobs's artifacts.
 
@@ -37,10 +48,17 @@ class Artifacts(Client):
         :param pipeline: pipeline slug
         :param build: build number
         :param job: job id
+        :param page: Int to determine which page to read from (See Pagination in README)
+        :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of a job’s artifacts.
         """
         url = self.path + "jobs/{}/artifacts/"
-        return self.client.get(url.format(organization, pipeline, build, job))
+        query_params = {"page": page}
+        return self.client.get(
+            url.format(organization, pipeline, build, job),
+            query_params=query_params,
+            with_pagination=with_pagination,
+        )
 
     def get_artifact(self, organization, pipeline, build, job, artifact):
         """
