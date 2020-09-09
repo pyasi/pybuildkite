@@ -29,7 +29,7 @@ def test_list_all_builds_single_build_state(fake_client):
     )
 
 
-def test_list_all_builds_multipe_build_states(fake_client):
+def test_list_all_builds_multiple_build_states(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
     builds.list_all(states=[BuildState.RUNNING, BuildState.FINISHED])
     fake_client.get.assert_called_with(
