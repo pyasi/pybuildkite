@@ -104,8 +104,8 @@ class Pipelines(Client):
         visibility: str = None,
     ):
         """
-        Patch a pipeline. 
-        See https://buildkite.com/docs/apis/rest-api/pipelines#update-a-pipeline 
+        Patch a pipeline.
+        See https://buildkite.com/docs/apis/rest-api/pipelines#update-a-pipeline
         for documentation on each input
 
         :param organization: Organization slug

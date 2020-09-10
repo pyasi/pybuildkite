@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pybuildkite",
-    version="1.0.0",
+    version="1.1.0",
     url="https://github.com/pyasi/pybuildkite",
     download_url="https://github.com/pyasi/pybuildkite/archive/master.zip",
     author="Peter Yasi",
