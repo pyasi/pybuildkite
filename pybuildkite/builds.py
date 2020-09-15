@@ -75,6 +75,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        include_retried_jobs=False,
         page=0,
         with_pagination=False,
     ):
@@ -91,6 +92,8 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data. Example: ?meta_data[some-key]=some-value
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param include_retried_jobs: Include all retried job executions in each build’s jobs list.
+               Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of all builds across all the user’s organizations and pipelines
@@ -106,6 +109,7 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
+            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
         query_params.update(self.__process_meta_data(meta_data))
@@ -125,6 +129,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        include_retried_jobs=False,
         page=0,
         with_pagination=False,
     ):
@@ -141,6 +146,8 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param include_retried_jobs: Include all retried job executions in each build’s jobs list.
+               Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of an organization’s builds across all of an organization’s pipelines.
@@ -157,6 +164,7 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
+            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
         query_params.update(self.__process_meta_data(meta_data))
@@ -179,6 +187,7 @@ class Builds(Client):
         meta_data=None,
         branch=None,
         commit=None,
+        include_retried_jobs=False,
         page=0,
         with_pagination=False,
     ):
@@ -196,6 +205,8 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
+        :param include_retried_jobs: Include all retried job executions in each build’s jobs list.
+               Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
         :return: Returns a paginated list of a pipeline’s builds.
@@ -212,6 +223,7 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
+            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
         query_params.update(self.__process_meta_data(meta_data))
@@ -222,17 +234,23 @@ class Builds(Client):
             with_pagination=with_pagination,
         )
 
-    def get_build_by_number(self, organization, pipeline, build_number):
+    def get_build_by_number(
+        self, organization, pipeline, build_number, include_retried_jobs=False
+    ):
         """
         Get build by build number
 
         :param organization: Organization slug
         :param pipeline: Pipeline slug
         :param build_number: Build number
+        :param include_retried_jobs: Include all retried job executions in each build’s jobs list.
+               Without this parameter, you'll see only the most recently run job for each step.
         :return: A build
         """
+        query_params = {"include_retried_jobs": include_retried_jobs}
         return self.client.get(
-            self.path_for_build_number.format(organization, pipeline, build_number)
+            self.path_for_build_number.format(organization, pipeline, build_number),
+            query_params=query_params,
         )
 
     def create_build(
