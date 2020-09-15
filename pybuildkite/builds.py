@@ -109,9 +109,12 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
-            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
+
+        if include_retried_jobs:
+            query_params.update(include_retried_jobs=include_retried_jobs)
+
         query_params.update(self.__process_meta_data(meta_data))
 
         return self.client.get(
@@ -164,9 +167,12 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
-            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
+
+        if include_retried_jobs:
+            query_params.update(include_retried_jobs=include_retried_jobs)
+
         query_params.update(self.__process_meta_data(meta_data))
 
         return self.client.get(
@@ -223,9 +229,12 @@ class Builds(Client):
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
-            "include_retried_jobs": include_retried_jobs,
             "page": page,
         }
+
+        if include_retried_jobs:
+            query_params.update(include_retried_jobs=include_retried_jobs)
+
         query_params.update(self.__process_meta_data(meta_data))
 
         return self.client.get(
@@ -247,7 +256,10 @@ class Builds(Client):
                Without this parameter, you'll see only the most recently run job for each step.
         :return: A build
         """
-        query_params = {"include_retried_jobs": include_retried_jobs}
+        query_params = {}
+        if include_retried_jobs:
+            query_params.update(include_retried_jobs=include_retried_jobs)
+
         return self.client.get(
             self.path_for_build_number.format(organization, pipeline, build_number),
             query_params=query_params,
