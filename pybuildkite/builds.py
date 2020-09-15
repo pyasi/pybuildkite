@@ -248,7 +248,7 @@ class Builds(Client):
         :return: A build
         """
         query_params = {
-            "include_retried_jobs": True if include_retried_jobs is True else None,
+            "include_retried_jobs": True if include_retried_jobs is True else None
         }
         return self.client.get(
             self.path_for_build_number.format(organization, pipeline, build_number),
