@@ -23,6 +23,7 @@ def test_list_all_builds_single_build_state(fake_client):
             "state": "state=running",
             "branch": None,
             "commit": None,
+            "include_retried_jobs": None,
             "page": 0,
         },
         with_pagination=False,
@@ -42,6 +43,7 @@ def test_list_all_builds_multiple_build_states(fake_client):
             "state": "state[]=running&state[]=finished",
             "branch": None,
             "commit": None,
+            "include_retried_jobs": None,
             "page": 0,
         },
         with_pagination=False,
@@ -79,6 +81,7 @@ def test_list_all_builds_for_org(fake_client):
             "state": None,
             "branch": None,
             "commit": None,
+            "include_retried_jobs": None,
             "page": 0,
         },
         with_pagination=False,
@@ -98,6 +101,7 @@ def test_list_all_for_pipeline(fake_client):
             "state": None,
             "branch": None,
             "commit": None,
+            "include_retried_jobs": None,
             "page": 0,
         },
         with_pagination=False,
@@ -108,7 +112,19 @@ def test_get_build_by_number(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
     builds.get_build_by_number("org_slug", "pipeline_id", "build_number")
     fake_client.get.assert_called_with(
-        builds.path_for_build_number.format("org_slug", "pipeline_id", "build_number")
+        builds.path_for_build_number.format("org_slug", "pipeline_id", "build_number"),
+        query_params={"include_retried_jobs": None},
+    )
+
+
+def test_get_build_by_number_with_retried_jobs(fake_client):
+    builds = Builds(fake_client, "https://api.buildkite.com/v2/")
+    builds.get_build_by_number(
+        "org_slug", "pipeline_id", "build_number", include_retried_jobs=True
+    )
+    fake_client.get.assert_called_with(
+        builds.path_for_build_number.format("org_slug", "pipeline_id", "build_number"),
+        query_params={"include_retried_jobs": True},
     )
 
 
