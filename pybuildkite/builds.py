@@ -103,9 +103,9 @@ class Builds(Client):
 
         query_params = {
             "creator": creator,
-            "created_from": created_from,
-            "created_to": created_to,
-            "finished_from": finished_from,
+            "created_from": self.__api_date_format(created_from),
+            "created_to": self.__api_date_format(created_to),
+            "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
@@ -158,9 +158,9 @@ class Builds(Client):
 
         query_params = {
             "creator": creator,
-            "created_from": created_from,
-            "created_to": created_to,
-            "finished_from": finished_from,
+            "created_from": self.__api_date_format(created_from),
+            "created_to": self.__api_date_format(created_to),
+            "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
@@ -217,9 +217,9 @@ class Builds(Client):
 
         query_params = {
             "creator": creator,
-            "created_from": created_from,
-            "created_to": created_to,
-            "finished_from": finished_from,
+            "created_from": self.__api_date_format(created_from),
+            "created_to": self.__api_date_format(created_to),
+            "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
             "branch": branch,
             "commit": commit,
@@ -335,6 +335,11 @@ class Builds(Client):
             if date is not None:
                 if not isinstance(date, datetime.date):
                     raise NotValidDateTime
+    @staticmethod
+    def __api_date_format(datetime):
+        if datetime is None:
+            return None
+        return datetime.isoformat()
 
     @staticmethod
     def __are_valid_states(states):
