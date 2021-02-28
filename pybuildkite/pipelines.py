@@ -75,6 +75,28 @@ class Pipelines(Client):
 
         return self.client.post(self.path.format(organization), body=data)
 
+    def create_yaml_pipeline(
+        self,
+        organization,
+        pipeline_name,
+        git_repository,
+        configuration
+    ):
+        """
+        Create a pipeline
+        :param organization: Organization slug
+        :param pipeline_name:Pipeline slug
+        :param git_repository: repo URL
+        :param configuration: a valid pipeline.yml
+        :return:
+        """
+        data = {
+            "name": pipeline_name,
+            "repository": git_repository,
+            "configuration": configuration,
+        }
+        return self.client.post(self.path.format(organization), body=data)
+
     def delete_pipeline(self, organization, pipeline):
         """
         Delete a pipeline

@@ -51,6 +51,19 @@ def test_create_pipeline(fake_client):
                     "command": "buildkite-agent pipeline upload",
                 }
             ],
+        }
+    )
+
+
+def test_create_yaml_pipeline(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls")
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
         },
     )
 
