@@ -56,7 +56,8 @@ class Pipelines(Client):
         ],
     ):
         """
-        Create a pipeline
+        Create a pipeline for organizations using Web Visual Steps. 
+        See `create_yaml_pipeline` if you've migrated to YAML pipelines.
         :param build_steps: list of build pipeline steps
         Command: { "type": "script", "name": "Script", "command": "command.sh" }
         Wait for all previous steps to finish: { "type": "waiter" }
@@ -83,7 +84,8 @@ class Pipelines(Client):
         configuration
     ):
         """
-        Create a pipeline
+        Create a pipeline for organizations who have migrated to YAML pipelines
+        https://buildkite.com/changelog/99-introducing-the-yaml-steps-editor
         :param organization: Organization slug
         :param pipeline_name:Pipeline slug
         :param git_repository: repo URL
