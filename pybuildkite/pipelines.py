@@ -137,6 +137,9 @@ class Pipelines(Client):
         :param pipeline: Pipeline slug
         :return: Pipeline
         """
+        if configuration is not None and steps is not None:
+            raise PipelineException("Cannot set both `configuration` and `steps`. If you've migrated to YAML steps, please use `configuration`. Otherwise, use `steps`")
+
         body = {
             "branch_configuration": branch_configuration,
             "cancel_running_branch_builds": cancel_running_branch_builds,
@@ -155,3 +158,7 @@ class Pipelines(Client):
         }
         url = self.path.format(organization) + pipeline
         return self.client.patch(url, body=body)
+
+
+class PipelineException(Exception):
+    pass

@@ -1,4 +1,4 @@
-from pybuildkite.pipelines import Pipelines
+from pybuildkite.pipelines import PipelineException, Pipelines
 
 import pytest
 
@@ -98,8 +98,21 @@ def test_update_pipeline(fake_client):
             "provider_settings": None,
             "repository": None,
             "steps": None,
+            "configuration": None,
             "skip_queued_branch_builds": True,
             "skip_queued_branch_builds_filter": None,
             "visibility": None,
         },
     )
+
+def test_update_pipeline_configuration_and_steps(fake_client):
+    with pytest.raises(PipelineException):
+        pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+        pipeline.update_pipeline(
+            "test_org",
+            "test_pipeline",
+            name="Name Change Test",
+            env={"TEST_ENV_VAR": "VALUE"},
+            configuration="",
+            steps={}
+        )
