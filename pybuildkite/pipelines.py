@@ -56,7 +56,8 @@ class Pipelines(Client):
         ],
     ):
         """
-        Create a pipeline
+        Create a pipeline for organizations using Web Visual Steps. 
+        See `create_yaml_pipeline` if you've migrated to YAML pipelines.
         :param build_steps: list of build pipeline steps
         Command: { "type": "script", "name": "Script", "command": "command.sh" }
         Wait for all previous steps to finish: { "type": "waiter" }
@@ -73,6 +74,29 @@ class Pipelines(Client):
             "steps": build_steps,
         }
 
+        return self.client.post(self.path.format(organization), body=data)
+
+    def create_yaml_pipeline(
+        self,
+        organization,
+        pipeline_name,
+        git_repository,
+        configuration
+    ):
+        """
+        Create a pipeline for organizations who have migrated to YAML pipelines
+        https://buildkite.com/changelog/99-introducing-the-yaml-steps-editor
+        :param organization: Organization slug
+        :param pipeline_name:Pipeline slug
+        :param git_repository: repo URL
+        :param configuration: a valid pipeline.yml
+        :return:
+        """
+        data = {
+            "name": pipeline_name,
+            "repository": git_repository,
+            "configuration": configuration,
+        }
         return self.client.post(self.path.format(organization), body=data)
 
     def delete_pipeline(self, organization, pipeline):
@@ -98,6 +122,7 @@ class Pipelines(Client):
         name: str = None,
         provider_settings: dict = None,
         repository: str = None,
+        configuration: str = None,
         steps: dict = None,
         skip_queued_branch_builds: bool = None,
         skip_queued_branch_builds_filter: str = None,
@@ -112,6 +137,9 @@ class Pipelines(Client):
         :param pipeline: Pipeline slug
         :return: Pipeline
         """
+        if configuration is not None and steps is not None:
+            raise PipelineException("Cannot set both `configuration` and `steps`. If you've migrated to YAML steps, please use `configuration`. Otherwise, use `steps`")
+
         body = {
             "branch_configuration": branch_configuration,
             "cancel_running_branch_builds": cancel_running_branch_builds,
@@ -122,6 +150,7 @@ class Pipelines(Client):
             "name": name,
             "provider_settings": provider_settings,
             "repository": repository,
+            "configuration": configuration,
             "steps": steps,
             "skip_queued_branch_builds": skip_queued_branch_builds,
             "skip_queued_branch_builds_filter": skip_queued_branch_builds_filter,
@@ -129,3 +158,7 @@ class Pipelines(Client):
         }
         url = self.path.format(organization) + pipeline
         return self.client.patch(url, body=body)
+
+
+class PipelineException(Exception):
+    pass

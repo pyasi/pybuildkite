@@ -1,4 +1,4 @@
-from pybuildkite.pipelines import Pipelines
+from pybuildkite.pipelines import PipelineException, Pipelines
 
 import pytest
 
@@ -51,6 +51,19 @@ def test_create_pipeline(fake_client):
                     "command": "buildkite-agent pipeline upload",
                 }
             ],
+        }
+    )
+
+
+def test_create_yaml_pipeline(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls")
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
         },
     )
 
@@ -85,8 +98,21 @@ def test_update_pipeline(fake_client):
             "provider_settings": None,
             "repository": None,
             "steps": None,
+            "configuration": None,
             "skip_queued_branch_builds": True,
             "skip_queued_branch_builds_filter": None,
             "visibility": None,
         },
     )
+
+def test_update_pipeline_configuration_and_steps(fake_client):
+    with pytest.raises(PipelineException):
+        pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+        pipeline.update_pipeline(
+            "test_org",
+            "test_pipeline",
+            name="Name Change Test",
+            env={"TEST_ENV_VAR": "VALUE"},
+            configuration="",
+            steps={}
+        )
