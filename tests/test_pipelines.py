@@ -55,6 +55,28 @@ def test_create_pipeline(fake_client):
     )
 
 
+def test_create_pipeline_with_teams(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_pipeline("test_org", "test_pipeline", "my_repo", team_uuids=["123"])
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "steps": [
+                {
+                    "type": "script",
+                    "name": ":pipeline:",
+                    "command": "buildkite-agent pipeline upload",
+                }
+            ],
+            "team_uuids": [
+                "123"
+            ]
+        }
+    )
+
+
 def test_create_yaml_pipeline(fake_client):
     pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
     pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls")
@@ -64,6 +86,22 @@ def test_create_yaml_pipeline(fake_client):
             "name": "test_pipeline",
             "repository": "my_repo",
             "configuration": "steps:\n  - command: ls",
+        },
+    )
+
+
+def test_create_yaml_pipeline_with_teams(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls", team_uuids=["123"])
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
+            "team_uuids": [
+                "123"
+            ]
         },
     )
 

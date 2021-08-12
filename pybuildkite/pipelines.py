@@ -54,6 +54,7 @@ class Pipelines(Client):
                 command="buildkite-agent pipeline upload",
             )
         ],
+        team_uuids: list = None,
     ):
         """
         Create a pipeline for organizations using Web Visual Steps. 
@@ -66,12 +67,14 @@ class Pipelines(Client):
         :param organization: Organization slug
         :param pipeline_name:Pipeline slug
         :param git_repository: repo URL
+        :param team_uuids: A list of team_uuids. This property is only available if your organization has enabled Teams.
         :return:
         """
         data = {
             "name": pipeline_name,
             "repository": git_repository,
             "steps": build_steps,
+            "team_uuids": team_uuids,
         }
 
         return self.client.post(self.path.format(organization), body=data)
@@ -81,7 +84,8 @@ class Pipelines(Client):
         organization,
         pipeline_name,
         git_repository,
-        configuration
+        configuration,
+        team_uuids: list = None,
     ):
         """
         Create a pipeline for organizations who have migrated to YAML pipelines
@@ -90,12 +94,14 @@ class Pipelines(Client):
         :param pipeline_name:Pipeline slug
         :param git_repository: repo URL
         :param configuration: a valid pipeline.yml
+        :param team_uuids: A list of team_uuids. This property is only available if your organization has enabled Teams.
         :return:
         """
         data = {
             "name": pipeline_name,
             "repository": git_repository,
             "configuration": configuration,
+            "team_uuids": team_uuids,
         }
         return self.client.post(self.path.format(organization), body=data)
 
