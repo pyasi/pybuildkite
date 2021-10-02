@@ -2,7 +2,7 @@ mock==3.0.5
 coveralls==2.0.0
 pytest==5.2.1
 pytest-cov==2.8.1
-requests==2.22.0
+requests==2.26.0
 urllib3==1.26.5
 black==19.3b0
 typing-extensions==3.7.4.2
