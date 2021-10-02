@@ -51,6 +51,7 @@ def test_create_pipeline(fake_client):
                     "command": "buildkite-agent pipeline upload",
                 }
             ],
+            "team_uuids": None,
         }
     )
 
@@ -86,6 +87,7 @@ def test_create_yaml_pipeline(fake_client):
             "name": "test_pipeline",
             "repository": "my_repo",
             "configuration": "steps:\n  - command: ls",
+            "team_uuids": None,
         },
     )
 
