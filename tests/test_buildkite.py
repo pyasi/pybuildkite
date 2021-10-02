@@ -11,6 +11,7 @@ from pybuildkite.buildkite import (
     Teams,
     Users,
     Organizations,
+    Meta,
 )
 from pybuildkite.exceptions import NoAcccessTokenException
 
@@ -46,6 +47,7 @@ def test_access_token_set():
         (Buildkite().users, Users),
         (Buildkite().annotations, Annotations),
         (Buildkite().organizations, Organizations),
+        (Buildkite().meta, Meta),
     ],
 )
 def test_eval(function, expected_type):
