@@ -114,7 +114,7 @@ class Buildkite(object):
 
     def meta(self):
         """
-        Get Organization operations for the Buildkite API
+        Get Meta operations for the Buildkite API
 
         :return: Client
         """
