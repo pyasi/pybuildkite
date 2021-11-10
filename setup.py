@@ -16,6 +16,6 @@ setuptools.setup(
     description="Python wrapper for the Buildkite API",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    keywords=["Buildkite", "Continuos Integration", "API", "CI", "wrapper", "python"],
+    keywords=["Buildkite", "Continuous Integration", "API", "CI", "wrapper", "python"],
     install_requires=["requests"],
 )
