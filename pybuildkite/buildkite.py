@@ -9,6 +9,7 @@ from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
 from pybuildkite.teams import Teams
 from pybuildkite.users import Users
+from pybuildkite.access_tokens import AccessTokens
 from pybuildkite.meta import Meta
 from pybuildkite.decorators import requires_token
 
@@ -112,6 +113,15 @@ class Buildkite(object):
         """
         return Users(self.client, self.base_url)
 
+    @requires_token
+    def access_tokens(self):
+        """
+        Get Access Token operations for the Buildkite API
+
+        :return: Client
+        """
+        return AccessTokens(self.client, self.base_url)
+    
     def meta(self):
         """
         Get Meta operations for the Buildkite API
