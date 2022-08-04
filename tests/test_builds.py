@@ -70,21 +70,28 @@ def test_date_must_be_valid(fake_client):
         builds.list_all(created_from="2017-02-03")
 
 
-
 def test_correct_date_formats(fake_client):
 
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
 
     check_correct_dates(builds.list_all_for_org, fake_client, organization="org")
     check_correct_dates(builds.list_all, fake_client)
-    check_correct_dates(builds.list_all_for_pipeline, fake_client, organization="org", pipeline="pipe")
+    check_correct_dates(
+        builds.list_all_for_pipeline, fake_client, organization="org", pipeline="pipe"
+    )
+
 
 def check_correct_dates(func, fake_client, **kwargs):
-    func(**kwargs, created_to=datetime.date(2020,1,2), created_from=datetime.datetime(2020,1,1,10,10,10))
+    func(
+        **kwargs,
+        created_to=datetime.date(2020, 1, 2),
+        created_from=datetime.datetime(2020, 1, 1, 10, 10, 10)
+    )
     args = fake_client.get.call_args[0][1]
     assert args["created_from"] == "2020-01-01T10:10:10"
     assert args["created_to"] == "2020-01-02"
     assert args["finished_from"] == None
+
 
 def test_list_all_builds_for_org(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")

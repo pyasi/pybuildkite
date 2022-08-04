@@ -52,7 +52,7 @@ def test_create_pipeline(fake_client):
                 }
             ],
             "team_uuids": None,
-        }
+        },
     )
 
 
@@ -71,16 +71,16 @@ def test_create_pipeline_with_teams(fake_client):
                     "command": "buildkite-agent pipeline upload",
                 }
             ],
-            "team_uuids": [
-                "123"
-            ]
-        }
+            "team_uuids": ["123"],
+        },
     )
 
 
 def test_create_yaml_pipeline(fake_client):
     pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
-    pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls")
+    pipeline.create_yaml_pipeline(
+        "test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls"
+    )
     fake_client.post.assert_called_with(
         pipeline.path.format("test_org"),
         body={
@@ -94,16 +94,20 @@ def test_create_yaml_pipeline(fake_client):
 
 def test_create_yaml_pipeline_with_teams(fake_client):
     pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
-    pipeline.create_yaml_pipeline("test_org", "test_pipeline", "my_repo", "steps:\n  - command: ls", team_uuids=["123"])
+    pipeline.create_yaml_pipeline(
+        "test_org",
+        "test_pipeline",
+        "my_repo",
+        "steps:\n  - command: ls",
+        team_uuids=["123"],
+    )
     fake_client.post.assert_called_with(
         pipeline.path.format("test_org"),
         body={
             "name": "test_pipeline",
             "repository": "my_repo",
             "configuration": "steps:\n  - command: ls",
-            "team_uuids": [
-                "123"
-            ]
+            "team_uuids": ["123"],
         },
     )
 
@@ -145,6 +149,7 @@ def test_update_pipeline(fake_client):
         },
     )
 
+
 def test_update_pipeline_configuration_and_steps(fake_client):
     with pytest.raises(PipelineException):
         pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
@@ -154,5 +159,5 @@ def test_update_pipeline_configuration_and_steps(fake_client):
             name="Name Change Test",
             env={"TEST_ENV_VAR": "VALUE"},
             configuration="",
-            steps={}
+            steps={},
         )

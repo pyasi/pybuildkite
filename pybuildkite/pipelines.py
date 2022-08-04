@@ -57,7 +57,7 @@ class Pipelines(Client):
         team_uuids: list = None,
     ):
         """
-        Create a pipeline for organizations using Web Visual Steps. 
+        Create a pipeline for organizations using Web Visual Steps.
         See `create_yaml_pipeline` if you've migrated to YAML pipelines.
         :param build_steps: list of build pipeline steps
         Command: { "type": "script", "name": "Script", "command": "command.sh" }
@@ -144,7 +144,9 @@ class Pipelines(Client):
         :return: Pipeline
         """
         if configuration is not None and steps is not None:
-            raise PipelineException("Cannot set both `configuration` and `steps`. If you've migrated to YAML steps, please use `configuration`. Otherwise, use `steps`")
+            raise PipelineException(
+                "Cannot set both `configuration` and `steps`. If you've migrated to YAML steps, please use `configuration`. Otherwise, use `steps`"
+            )
 
         body = {
             "branch_configuration": branch_configuration,
