@@ -6,6 +6,14 @@ class NoAcccessTokenException(Exception):
     pass
 
 
+class NoAgentTokenException(Exception):
+    """
+    Indicates that an agent token was not set when it was required
+    """
+
+    pass
+
+
 class NotValidDateTime(Exception):
     """
     Raised when date is not a valid datetime.date

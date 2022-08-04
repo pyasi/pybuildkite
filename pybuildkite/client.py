@@ -1,6 +1,8 @@
 import requests
 from urllib.parse import urlparse
 
+from pybuildkite.constants import APIVersion
+
 
 class Client(object):
     """
@@ -12,6 +14,8 @@ class Client(object):
         Create class
         """
         self.access_token = ""
+        self.agent_token = ""
+        self._api_version = APIVersion.V2
 
     def is_access_token_set(self):
         """
@@ -28,6 +32,29 @@ class Client(object):
         """
         self.access_token = access_token
 
+    def is_agent_token_set(self) -> bool:
+        """
+        Has this client got an agent token set in it
+
+        :return: true or false
+        """
+        return not self.agent_token == ""
+
+    def set_client_agent_token(self, agent_token: str) -> None:
+        """
+        Set an agent token to use for Agent REST API calls
+        :param agent_token: The token
+        """
+        self.agent_token = agent_token
+
+    @property
+    def api_version(self) -> APIVersion:
+        return self._api_version
+
+    @api_version.setter
+    def api_version(self, api_version: APIVersion) -> None:
+        self._api_version = api_version
+
     def request(
         self,
         method,
@@ -41,7 +68,9 @@ class Client(object):
         """
         Make a request to the API
 
-        The request will be authorised if the access token is set.
+        The request will be authorised if the access token is set and it is to
+        the Buildkite API v2 or if the agent token is set and it is to the
+        Agent API v3.
 
         With no accept header set or if set to "application/json",
         the response will be parsed as Json and returned as a dict.
@@ -60,8 +89,10 @@ class Client(object):
         if headers is None:
             raise ValueError("headers cannot be None")
 
-        if self.access_token:
+        if self.access_token and self._api_version == APIVersion.V2:
             headers["Authorization"] = "Bearer {}".format(self.access_token)
+        elif self.agent_token and self._api_version == APIVersion.V3:
+            headers["Authorization"] = "Token {}".format(self.agent_token)
 
         if body:
             body = self._clean_query_params(body)

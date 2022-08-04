@@ -1,17 +1,19 @@
 from pybuildkite.client import Client
+from pybuildkite.constants import AGENT_V3_BASE_URL, APIVersion
 from pybuildkite.organizations import Organizations
 from pybuildkite.pipelines import Pipelines
 from pybuildkite.builds import Builds, BuildState
 from pybuildkite.jobs import Jobs, LogFormat
 from pybuildkite.agents import Agents
 from pybuildkite.emojis import Emojis
+from pybuildkite.metrics import Metrics
 from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
 from pybuildkite.teams import Teams
 from pybuildkite.users import Users
 from pybuildkite.access_tokens import AccessTokens
 from pybuildkite.meta import Meta
-from pybuildkite.decorators import requires_token
+from pybuildkite.decorators import requires_token, requires_agent_token
 
 
 class Buildkite(object):
@@ -32,6 +34,13 @@ class Buildkite(object):
         :param access_token: The access token
         """
         self.client.set_client_access_token(access_token)
+
+    def set_agent_token(self, agent_token: str) -> None:
+        """
+        Set the agent registration token to be used to authenticate the requests
+        :param agent_token: The agent token
+        """
+        self.client.set_client_agent_token(agent_token)
 
     @requires_token
     def organizations(self):
@@ -84,6 +93,13 @@ class Buildkite(object):
         Get Emoji operations for the Buildkite API
         """
         return Emojis(self.client, self.base_url)
+
+    @requires_agent_token
+    def metrics(self) -> Metrics:
+        """
+        Get Metrics operations for the Agent API
+        """
+        return Metrics(self.client, AGENT_V3_BASE_URL)
 
     @requires_token
     def annotations(self):
