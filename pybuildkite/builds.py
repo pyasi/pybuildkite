@@ -335,6 +335,7 @@ class Builds(Client):
             if date is not None:
                 if not isinstance(date, datetime.date):
                     raise NotValidDateTime
+
     @staticmethod
     def __api_date_format(datetime):
         if datetime is None:

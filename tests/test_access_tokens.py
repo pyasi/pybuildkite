@@ -11,6 +11,7 @@ def test_get_access_token(fake_client):
     url = "base/access-token"
     fake_client.get.assert_called_with(url)
 
+
 def test_revoke_access_token(fake_client):
     """
     Test Get Access Token
