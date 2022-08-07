@@ -2,7 +2,7 @@ from typing import Callable
 from pybuildkite.exceptions import NoAcccessTokenException, NoAgentTokenException
 
 
-def requires_token(func: Callable):
+def requires_access_token(func: Callable):
     """
     This annotation protects API calls that require authentication.
 
@@ -41,13 +41,13 @@ def requires_agent_token(func: Callable):
 
     def wrapper(self, *args, **kwargs):
         """
-        Call func or raise NoAgentTokenException if no agent token is set
+        Call func or raise NoAgentTokenException if no access token is set
 
         :param self:
         :param args: Optional
         :param kwargs: Optional
 
-        :raises NoAgentTokenException: If no agent token is set
+        :raises NoAgentTokenException: If no access token is set
         :return:
         """
         if not self.client.is_agent_token_set():

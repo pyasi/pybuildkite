@@ -1,32 +1,31 @@
 from pybuildkite.client import Client
-from pybuildkite.constants import AGENT_V3_BASE_URL, APIVersion
+from pybuildkite.constants import APIVersion
 from pybuildkite.organizations import Organizations
 from pybuildkite.pipelines import Pipelines
 from pybuildkite.builds import Builds, BuildState
 from pybuildkite.jobs import Jobs, LogFormat
 from pybuildkite.agents import Agents
 from pybuildkite.emojis import Emojis
-from pybuildkite.metrics import Metrics
 from pybuildkite.annotations import Annotations
 from pybuildkite.artifacts import Artifacts
 from pybuildkite.teams import Teams
 from pybuildkite.users import Users
 from pybuildkite.access_tokens import AccessTokens
 from pybuildkite.meta import Meta
-from pybuildkite.decorators import requires_token, requires_agent_token
+from pybuildkite.decorators import requires_access_token
 
 
 class Buildkite(object):
     """
-    Public API for Buildkite
+    Public API for the Buildkite REST API, https://buildkite.com/docs/apis/rest-api
     """
 
-    def __init__(self):
+    def __init__(self, api_version: APIVersion = APIVersion.V2) -> None:
         """
         Create a new client
         """
-        self.client = Client()
-        self.base_url = "https://api.buildkite.com/v2/"
+        self.client = Client(api_version)
+        self.base_url = f"https://api.buildkite.com/{api_version.value}/"
 
     def set_access_token(self, access_token):
         """
@@ -35,14 +34,7 @@ class Buildkite(object):
         """
         self.client.set_client_access_token(access_token)
 
-    def set_agent_token(self, agent_token: str) -> None:
-        """
-        Set the agent registration token to be used to authenticate the requests
-        :param agent_token: The agent token
-        """
-        self.client.set_client_agent_token(agent_token)
-
-    @requires_token
+    @requires_access_token
     def organizations(self):
         """
         Get Organization operations for the Buildkite API
@@ -51,7 +43,7 @@ class Buildkite(object):
         """
         return Organizations(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def pipelines(self):
         """
         Get Pipeline operations for the Buildkite API
@@ -60,7 +52,7 @@ class Buildkite(object):
         """
         return Pipelines(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def builds(self):
         """
         Get Build operations for the Buildkite API
@@ -69,7 +61,7 @@ class Buildkite(object):
         """
         return Builds(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def jobs(self):
         """
         Get Job operations for the Buildkite API
@@ -78,7 +70,7 @@ class Buildkite(object):
         """
         return Jobs(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def agents(self):
         """
         Get Agent operations for the Buildkite API
@@ -87,49 +79,42 @@ class Buildkite(object):
         """
         return Agents(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def emojis(self):
         """
         Get Emoji operations for the Buildkite API
         """
         return Emojis(self.client, self.base_url)
 
-    @requires_agent_token
-    def metrics(self) -> Metrics:
-        """
-        Get Metrics operations for the Agent API
-        """
-        return Metrics(self.client, AGENT_V3_BASE_URL)
-
-    @requires_token
+    @requires_access_token
     def annotations(self):
         """
         Get Annotation operations for the Buildkite API
         """
         return Annotations(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def artifacts(self):
         """
         Get Artifact operations for the Buildkite API
         """
         return Artifacts(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def teams(self):
         """
         Get Team operations for the Buildkite API
         """
         return Teams(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def users(self):
         """
         Get User operations for the Buildkite API
         """
         return Users(self.client, self.base_url)
 
-    @requires_token
+    @requires_access_token
     def access_tokens(self):
         """
         Get Access Token operations for the Buildkite API

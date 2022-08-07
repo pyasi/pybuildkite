@@ -1,4 +1,13 @@
-class NoAcccessTokenException(Exception):
+class NoTokenException(Exception):
+    """
+    Indicates that a token was not set when it was required
+    """
+
+    pass
+
+
+# TODO: Rename to NoAccessTokenException.
+class NoAcccessTokenException(NoTokenException):
     """
     Indicates that an access token was not set when it was required
     """
@@ -6,7 +15,7 @@ class NoAcccessTokenException(Exception):
     pass
 
 
-class NoAgentTokenException(Exception):
+class NoAgentTokenException(NoTokenException):
     """
     Indicates that an agent token was not set when it was required
     """
