@@ -17,7 +17,7 @@ class BaseClient(abc.ABC):
         Create class
         """
         self._token = ""
-        self._api_version = api_version
+        self.api_version = api_version
 
     @abc.abstractmethod
     def _get_authorization_header(self) -> str:
@@ -26,10 +26,6 @@ class BaseClient(abc.ABC):
     @property
     def token(self) -> str:
         return self._token
-
-    @token.setter
-    def token(self, token: str) -> None:
-        self._token = token
 
     @property
     def api_version(self) -> APIVersion:
@@ -40,7 +36,7 @@ class BaseClient(abc.ABC):
         self._api_version = api_version
 
     def _is_token_set(self) -> bool:
-        return not self._token == ""
+        return not self.token == ""
 
     def request(
         self,
@@ -74,7 +70,7 @@ class BaseClient(abc.ABC):
         if headers is None:
             raise ValueError("headers cannot be None")
 
-        if self._token:
+        if self.token:
             headers["Authorization"] = self._get_authorization_header()
 
         if body:

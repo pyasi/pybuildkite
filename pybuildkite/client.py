@@ -13,6 +13,7 @@ class Client(BaseClient):
 
     def __init__(self, api_version: APIVersion = APIVersion.V2) -> None:
         super().__init__(api_version)
+        self.access_token = ""
 
     def is_access_token_set(self):
         """
@@ -31,7 +32,7 @@ class Client(BaseClient):
 
     @property
     def access_token(self) -> str:
-        return self._token
+        return self.token
 
     @access_token.setter
     def access_token(self, access_token: str) -> None:
@@ -48,6 +49,7 @@ class AgentClient(BaseClient):
 
     def __init__(self, api_version: APIVersion = APIVersion.V3) -> None:
         super().__init__(api_version)
+        self.agent_token == ""
 
     def is_agent_token_set(self) -> bool:
         """
@@ -66,7 +68,7 @@ class AgentClient(BaseClient):
 
     @property
     def agent_token(self) -> str:
-        return self._token
+        return self.token
 
     @agent_token.setter
     def agent_token(self, agent_token: str) -> None:
