@@ -241,7 +241,7 @@ class Client(object):
     @staticmethod
     def _clean_query_params(
         query_params: Any,
-    ) -> Dict:  # XXX: Bad Any and needs better Dict.
+    ) -> Dict:  # TODO: Bad Any and needs better Dict.
         """
 
         :param query_params:
