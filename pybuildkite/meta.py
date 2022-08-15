@@ -1,6 +1,6 @@
 from posixpath import join as urljoin
 
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Meta(Client):
@@ -8,7 +8,7 @@ class Meta(Client):
     Meta operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -18,7 +18,7 @@ class Meta(Client):
         self.client = client
         self.path = urljoin(base_url, "meta")
 
-    def get_meta_information(self):
+    def get_meta_information(self) -> RequestResponse:
         """
         Returns meta information
 

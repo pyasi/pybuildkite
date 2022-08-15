@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 from enum import Enum
-from typing import List
+from typing import Any, List, Mapping, TYPE_CHECKING
 
 from pybuildkite.client import Client
 from pybuildkite.exceptions import (
@@ -8,6 +10,9 @@ from pybuildkite.exceptions import (
     NotValidDateTime,
     BuildStateNotAList,
 )
+
+if TYPE_CHECKING:
+    from pybuildkite.client import RequestResponse
 
 
 class BuildState(Enum):
@@ -50,7 +55,7 @@ class Builds(Client):
     Build operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -67,18 +72,18 @@ class Builds(Client):
 
     def list_all(
         self,
-        creator=None,
-        created_from=None,
-        created_to=None,
-        finished_from=None,
-        states=[],
-        meta_data=None,
-        branch=None,
-        commit=None,
-        include_retried_jobs=None,
-        page=0,
-        with_pagination=False,
-    ):
+        creator: str = None,
+        created_from: datetime.date = None,
+        created_to: datetime.date = None,
+        finished_from: datetime.date = None,
+        states: list[BuildState] = [],
+        meta_data: Mapping[str, Any] = None,
+        branch: str | None = None,
+        commit: str | None = None,
+        include_retried_jobs: bool | None = None,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of all builds across all the user’s organizations and pipelines. If using
         token-based authentication the list of builds will be for the authorized organizations only. Builds are
@@ -120,19 +125,19 @@ class Builds(Client):
 
     def list_all_for_org(
         self,
-        organization,
-        creator=None,
-        created_from=None,
-        created_to=None,
-        finished_from=None,
-        states=[],
-        meta_data=None,
-        branch=None,
-        commit=None,
-        include_retried_jobs=None,
-        page=0,
-        with_pagination=False,
-    ):
+        organization: str,
+        creator: str = None,
+        created_from: datetime.date = None,
+        created_to: datetime.date = None,
+        finished_from: datetime.date = None,
+        states: list[BuildState] = [],
+        meta_data: Mapping[str, Any] = None,
+        branch: str | None = None,
+        commit: str | None = None,
+        include_retried_jobs: bool | None = None,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of an organization’s builds across all of an organization’s pipelines. Builds are
         listed in the order they were created (newest first).
@@ -177,20 +182,20 @@ class Builds(Client):
 
     def list_all_for_pipeline(
         self,
-        organization,
-        pipeline,
-        creator=None,
-        created_from=None,
-        created_to=None,
-        finished_from=None,
-        states=[],
-        meta_data=None,
-        branch=None,
-        commit=None,
-        include_retried_jobs=None,
-        page=0,
-        with_pagination=False,
-    ):
+        organization: str,
+        pipeline: str,
+        creator: str | None = None,
+        created_from: datetime.date | None = None,
+        created_to: datetime.date | None = None,
+        finished_from: datetime.date | None = None,
+        states: list[BuildState] = [],
+        meta_data: Mapping[str, Any] = None,
+        branch: str | None = None,
+        commit: str | None = None,
+        include_retried_jobs: bool | None = None,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of a pipeline’s builds. Builds are listed in the order they were created (newest
         first).
@@ -235,8 +240,12 @@ class Builds(Client):
         )
 
     def get_build_by_number(
-        self, organization, pipeline, build_number, include_retried_jobs=None
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build_number: int | str,
+        include_retried_jobs: bool = None,
+    ) -> RequestResponse:
         """
         Get build by build number
 
@@ -257,20 +266,20 @@ class Builds(Client):
 
     def create_build(
         self,
-        organization,
-        pipeline,
-        commit,
-        branch,
-        author=None,
-        clean_checkout=None,
-        env=None,
-        ignore_pipeline_branch_filters=None,
-        message=None,
-        meta_data=None,
-        pull_request_base_branch=None,
-        pull_request_id=None,
-        pull_request_repository=None,
-    ):
+        organization: str,
+        pipeline: str,
+        commit: str,
+        branch: str,
+        author: str | None = None,
+        clean_checkout: bool | None = None,
+        env: Any = None,  # TODO: Bad Any.
+        ignore_pipeline_branch_filters: bool | None = None,
+        message: str | None = None,
+        meta_data: Mapping[str, Any] = None,
+        pull_request_base_branch: str = None,
+        pull_request_id: int | str | None = None,
+        pull_request_repository: str | None = None,
+    ) -> RequestResponse:
         """
         Create a build
 
@@ -306,14 +315,18 @@ class Builds(Client):
             self.path_by_pipeline.format(organization, pipeline), body
         )
 
-    def cancel_build(self, organization, pipeline, build_number):
+    def cancel_build(
+        self, organization: str, pipeline: str, build_number: int | str
+    ) -> RequestResponse:
         cancel = "/cancel"
         return self.client.put(
             self.path_for_build_number.format(organization, pipeline, build_number)
             + cancel
         )
 
-    def rebuild_build(self, organization, pipeline, build_number):
+    def rebuild_build(
+        self, organization: str, pipeline: str, build_number: int | str
+    ) -> RequestResponse:
         rebuild = "/rebuild"
         return self.client.put(
             self.path_for_build_number.format(organization, pipeline, build_number)
@@ -321,7 +334,7 @@ class Builds(Client):
         )
 
     @staticmethod
-    def __process_meta_data(meta_data):
+    def __process_meta_data(meta_data: Mapping[str, Any] | None) -> dict[str, Any]:
         if not meta_data:
             return {}
         else:
@@ -330,20 +343,20 @@ class Builds(Client):
             }
 
     @staticmethod
-    def __validate_dates(datetimes):
+    def __validate_dates(datetimes: list[datetime.date | None]) -> None:
         for date in datetimes:
             if date is not None:
                 if not isinstance(date, datetime.date):
                     raise NotValidDateTime
 
     @staticmethod
-    def __api_date_format(datetime):
+    def __api_date_format(datetime: datetime.date | None) -> str | None:
         if datetime is None:
             return None
         return datetime.isoformat()
 
     @staticmethod
-    def __are_valid_states(states):
+    def __are_valid_states(states: list[BuildState]) -> None:
         if not isinstance(states, List):
             raise BuildStateNotAList
         if not states:
@@ -353,7 +366,7 @@ class Builds(Client):
                 raise NotValidBuildState
 
     @staticmethod
-    def __get_build_states_query_param(states):
+    def __get_build_states_query_param(states: list[BuildState]) -> str | None:
         if not states:
             return None
         if len(states) == 1:

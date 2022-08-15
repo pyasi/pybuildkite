@@ -1,4 +1,4 @@
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Teams(Client):
@@ -22,7 +22,7 @@ class Teams(Client):
         user_id: str = None,
         page: int = 0,
         with_pagination: bool = False,
-    ):
+    ) -> RequestResponse:
         """
         Returns a list of all the teams for a given organization
 

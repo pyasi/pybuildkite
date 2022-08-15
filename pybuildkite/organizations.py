@@ -1,4 +1,4 @@
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Organizations(Client):
@@ -6,7 +6,7 @@ class Organizations(Client):
     Organization operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -16,7 +16,11 @@ class Organizations(Client):
         self.client = client
         self.path = base_url + "organizations/"
 
-    def list_all(self, page=0, with_pagination=False):
+    def list_all(
+        self,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of the user’s organizations.
 
@@ -29,7 +33,7 @@ class Organizations(Client):
             self.path, query_params=query_params, with_pagination=with_pagination
         )
 
-    def get_org(self, org_name):
+    def get_org(self, org_name: str) -> RequestResponse:
         """
         Get an organization
 

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from posixpath import join as urljoin
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Artifacts(Client):
@@ -7,7 +9,7 @@ class Artifacts(Client):
     Artifacts operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -18,8 +20,13 @@ class Artifacts(Client):
         self.path = urljoin(base_url, "organizations/{}/pipelines/{}/builds/{}/")
 
     def list_artifacts_for_build(
-        self, organization, pipeline, build, page=0, with_pagination=False
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of a build's artifacts across all of its jobs.
 
@@ -39,8 +46,14 @@ class Artifacts(Client):
         )
 
     def list_artifacts_for_job(
-        self, organization, pipeline, build, job, page=0, with_pagination=False
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of a jobs's artifacts.
 
@@ -60,7 +73,14 @@ class Artifacts(Client):
             with_pagination=with_pagination,
         )
 
-    def get_artifact(self, organization, pipeline, build, job, artifact):
+    def get_artifact(
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+        artifact: str,
+    ) -> RequestResponse:
         """
         Returns an artifact.
 
@@ -75,8 +95,14 @@ class Artifacts(Client):
         return self.client.get(url.format(organization, pipeline, build, job, artifact))
 
     def download_artifact(
-        self, organization, pipeline, build, job, artifact, as_stream=False
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+        artifact: str,
+        as_stream: bool = False,
+    ) -> RequestResponse:
         """
         Returns the content of an artifact as bytes.
 

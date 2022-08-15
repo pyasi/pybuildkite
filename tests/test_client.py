@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import requests
 import pytest
 
 from pybuildkite.client import Client, Response
@@ -52,7 +53,9 @@ class TestResponse:
 
     def test_no_data_added_without_pagination_headers(self):
         response = Response({"Body": "FakeBody"})
-        response_headers = ""
+        response_headers: requests.sessions.CaseInsensitiveDict = (
+            requests.sessions.CaseInsensitiveDict()
+        )
         response.append_pagination_data(response_headers)
         assert response.body == {"Body": "FakeBody"}
         assert response.first_page == None
@@ -62,14 +65,16 @@ class TestResponse:
 
     def test_pagination_headers_with_next_and_last(self):
         response = Response({"Body": "FakeBody"})
-        response_headers = {
-            "Date": "Wed, 20 Nov 2019 03:13:27 GMT",
-            "Content-Type": "application/json; charset=utf-8",
-            "Connection": "keep-alive",
-            "Server": "nginx",
-            "Link": '<https://api.buildkite.com/v2/builds?access_token=FakeToken&page=2&per_page=100>; rel="next", <https://api.buildkite.com/v2/builds?access_token=FakeToken&page=8&per_page=100>; rel="last"',
-            "X-OAuth-Scopes": "read_agents",
-        }
+        response_headers = requests.sessions.CaseInsensitiveDict(
+            {
+                "Date": "Wed, 20 Nov 2019 03:13:27 GMT",
+                "Content-Type": "application/json; charset=utf-8",
+                "Connection": "keep-alive",
+                "Server": "nginx",
+                "Link": '<https://api.buildkite.com/v2/builds?access_token=FakeToken&page=2&per_page=100>; rel="next", <https://api.buildkite.com/v2/builds?access_token=FakeToken&page=8&per_page=100>; rel="last"',
+                "X-OAuth-Scopes": "read_agents",
+            }
+        )
         response.append_pagination_data(response_headers)
         assert response.body == {"Body": "FakeBody"}
         assert response.first_page == None
@@ -93,7 +98,7 @@ class TestClientRequest:
         with patch("requests.request") as request:
             request.return_value.json.return_value = {}
 
-            fake_client.request("GET", "http://www.google.com/")
+            fake_client.request("GET", "http://www.google.com/", headers={})
 
         request.assert_called_once_with(
             "GET",
@@ -203,7 +208,7 @@ class TestClientRequest:
         with patch("requests.request") as request:
             request.return_value.json.return_value = {"key": "value"}
 
-            resp = fake_client.request("GET", "http://www.google.com/")
+            resp = fake_client.request("GET", "http://www.google.com/", headers={})
 
         expected_params = b"per_page=100"
         request.assert_called_once_with(
@@ -228,7 +233,7 @@ class TestClientRequest:
         with patch("requests.request") as request:
             request.return_value.json.return_value = {"key": "value"}
 
-            resp = fake_client.request("GET", "http://www.google.com/")
+            resp = fake_client.request("GET", "http://www.google.com/", headers={})
 
         expected_params = b"per_page=100"
         request.assert_called_once_with(

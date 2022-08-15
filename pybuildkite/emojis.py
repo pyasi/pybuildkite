@@ -1,4 +1,4 @@
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Emojis(Client):
@@ -6,7 +6,7 @@ class Emojis(Client):
     Emoji operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -16,7 +16,9 @@ class Emojis(Client):
         self.client = client
         self.path = base_url + "organizations/{}/emojis/"
 
-    def list_emojis(self, organization, page=0, with_pagination=False):
+    def list_emojis(
+        self, organization: str, page: int = 0, with_pagination: bool = False
+    ) -> RequestResponse:
         """
         Returns a list of all the emojis for a given organization
 

@@ -1,5 +1,16 @@
+from __future__ import annotations
+
+from typing import Any, Dict, Iterator, TypeAlias, TYPE_CHECKING
+
 import requests
-from urllib.parse import urlparse
+
+from pybuildkite.response import Response
+
+if TYPE_CHECKING:
+    _QueryParams: TypeAlias = requests.sessions._Params
+
+_HeadersMapping: TypeAlias = Dict[str, Any]  # TODO: Bad Any.
+RequestResponse: TypeAlias = Response | bool | Any | Iterator[Any] | bytes
 
 
 class Client(object):
@@ -7,13 +18,13 @@ class Client(object):
     Internal API Client
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Create class
         """
         self.access_token = ""
 
-    def is_access_token_set(self):
+    def is_access_token_set(self) -> bool:
         """
         Has this client got an access token set in it
 
@@ -21,7 +32,7 @@ class Client(object):
         """
         return not self.access_token == ""
 
-    def set_client_access_token(self, access_token):
+    def set_client_access_token(self, access_token: str) -> None:
         """
         Set an access token to use for API calls
         :param access_token: The token
@@ -30,14 +41,14 @@ class Client(object):
 
     def request(
         self,
-        method,
-        url,
-        query_params=None,
-        body=None,
-        headers={},
-        with_pagination=False,
-        as_stream=False,
-    ):
+        method: str | bytes,
+        url: str | bytes,
+        query_params: _QueryParams = None,
+        body: Any | None = None,
+        headers: _HeadersMapping = {},
+        with_pagination: bool = False,
+        as_stream: bool = False,
+    ) -> RequestResponse:
         """
         Make a request to the API
 
@@ -82,8 +93,8 @@ class Client(object):
         response.raise_for_status()
 
         if with_pagination:
-            response = self._get_paginated_response(response)
-            return response
+            paginated_response: Response = self._get_paginated_response(response)
+            return paginated_response
         if (
             method == "DELETE"
             or response.status_code == 204
@@ -97,7 +108,7 @@ class Client(object):
         else:
             return response.content
 
-    def _get_paginated_response(self, response):
+    def _get_paginated_response(self, response: requests.Response) -> Response:
         """
         Return a Response object with pagination data
 
@@ -108,8 +119,13 @@ class Client(object):
         return response_object
 
     def get(
-        self, url, query_params=None, headers={}, with_pagination=False, as_stream=False
-    ):
+        self,
+        url: str | bytes,
+        query_params: _QueryParams = None,
+        headers: _HeadersMapping = {},
+        with_pagination: bool = False,
+        as_stream: bool = False,
+    ) -> RequestResponse:
         """
         Make a GET request to the API
 
@@ -131,7 +147,13 @@ class Client(object):
             as_stream=as_stream,
         )
 
-    def post(self, url, body=None, headers={}, query_params=None):
+    def post(
+        self,
+        url: str | bytes,
+        body: Any = None,
+        headers: _HeadersMapping = {},
+        query_params: _QueryParams = None,
+    ) -> RequestResponse:
         """
         Make a POST request to the API
 
@@ -148,7 +170,13 @@ class Client(object):
             "POST", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def put(self, url, body=None, headers={}, query_params=None):
+    def put(
+        self,
+        url: str | bytes,
+        body: Any = None,
+        headers: _HeadersMapping = {},
+        query_params: _QueryParams = None,
+    ) -> RequestResponse:
         """
         Make a PUT request to the API
 
@@ -165,7 +193,13 @@ class Client(object):
             "PUT", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def delete(self, url, body=None, headers={}, query_params=None):
+    def delete(
+        self,
+        url: str | bytes,
+        body: Any = None,
+        headers: _HeadersMapping = {},
+        query_params: _QueryParams = None,
+    ) -> RequestResponse:
         """
         Make a DELETE request to the API
 
@@ -182,7 +216,13 @@ class Client(object):
             "DELETE", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def patch(self, url, body=None, headers={}, query_params=None):
+    def patch(
+        self,
+        url: str | bytes,
+        body: Any = None,
+        headers: _HeadersMapping = {},
+        query_params: _QueryParams = None,
+    ) -> Any:
         """
         Make a PATCH request to the API
 
@@ -199,7 +239,9 @@ class Client(object):
         )
 
     @staticmethod
-    def _clean_query_params(query_params):
+    def _clean_query_params(
+        query_params: Any,
+    ) -> Dict:  # XXX: Bad Any and needs better Dict.
         """
 
         :param query_params:
@@ -208,7 +250,7 @@ class Client(object):
         return {key: value for key, value in query_params.items() if value is not None}
 
     @staticmethod
-    def _convert_query_params_to_string_for_bytes(query_params):
+    def _convert_query_params_to_string_for_bytes(query_params: Any) -> str:
         """
         Required to set multiple build states i.e ?state[]=running&state[]=scheduled
 
@@ -224,50 +266,3 @@ class Client(object):
             else:
                 query_string += key + "=" + str(value)
         return query_string
-
-
-class Response:
-    """
-    Response object used for pagination requests
-    """
-
-    def __init__(self, body):
-        self.body = body
-        self.next_page = None
-        self.last_page = None
-        self.first_page = None
-        self.previous_page = None
-
-    def append_pagination_data(self, response_headers):
-        """
-        Add pagination data to the response based on response headers
-
-        :param respone_headers: dict containing pagination information from the API
-        """
-        if "Link" in response_headers and len(response_headers["Link"]) > 0:
-            for link in response_headers["Link"].split(", "):
-                url, page_value = link.split("; ", 1)
-                if page_value == 'rel="next"':
-                    self.next_page = self._get_page_number_from_url(url)
-                elif page_value == 'rel="last"':
-                    self.last_page = self._get_page_number_from_url(url)
-                elif page_value == 'rel="first"':
-                    self.first_page = self._get_page_number_from_url(url)
-                elif page_value == 'rel="prev"':
-                    self.previous_page = self._get_page_number_from_url(url)
-        return self
-
-    def _get_page_number_from_url(self, url):
-        """
-        Gets the page number for pagination from a given url
-
-        :param url: url to retrieve page from
-        :return: int of page in url
-        """
-        parsed = urlparse(url)
-        query_string = parsed.query
-        for segment in query_string.split("&"):
-            key, value = segment.split("=", 1)
-            if key == "page":
-                return int(value)
-        return 0

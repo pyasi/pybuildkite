@@ -1,8 +1,13 @@
-from typing import Callable
+from __future__ import annotations
+
+from typing import Any, Callable, TypeVar, TYPE_CHECKING
 from pybuildkite.exceptions import NoAcccessTokenException
 
+if TYPE_CHECKING:
+    from pybuildkite.buildkite import Buildkite
 
-def requires_token(func: Callable):
+
+def requires_token(func: Callable) -> Callable:
     """
     This annotation protects API calls that require authentication.
 
@@ -11,7 +16,7 @@ def requires_token(func: Callable):
     :return: Function decorated with the protection
     """
 
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self: Buildkite, *args: Any, **kwargs: Any) -> Any:
         """
         Call func or raise NoAcccessTokenException if no access token is set
 

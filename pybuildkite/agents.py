@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from posixpath import join as urljoin
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Agents(Client):
@@ -7,7 +9,7 @@ class Agents(Client):
     Agent operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -19,13 +21,13 @@ class Agents(Client):
 
     def list_all(
         self,
-        organization,
-        name=None,
-        hostname=None,
-        version=None,
-        page=0,
-        with_pagination=False,
-    ):
+        organization: str,
+        name: str | None = None,
+        hostname: str | None = None,
+        version: str | None = None,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of an organization’s agents.
 
@@ -49,7 +51,7 @@ class Agents(Client):
             with_pagination=with_pagination,
         )
 
-    def get_agent(self, organization, agent_id):
+    def get_agent(self, organization: str, agent_id: str) -> RequestResponse:
         """
         Get an agent
 
@@ -59,7 +61,9 @@ class Agents(Client):
         """
         return self.client.get(self.path.format(organization) + agent_id)
 
-    def stop_agent(self, organization, agent_id, force=True):
+    def stop_agent(
+        self, organization: str, agent_id: str, force: bool = True
+    ) -> RequestResponse:
         """
         Stop an agent
 

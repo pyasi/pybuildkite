@@ -1,4 +1,6 @@
-from pybuildkite.client import Client
+from __future__ import annotations
+
+from pybuildkite.client import Client, RequestResponse
 
 
 class Pipelines(Client):
@@ -6,7 +8,7 @@ class Pipelines(Client):
     Pipeline operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -16,7 +18,9 @@ class Pipelines(Client):
         self.client = client
         self.path = base_url + "organizations/{}/pipelines/"
 
-    def list_pipelines(self, organization, page=0, with_pagination=False):
+    def list_pipelines(
+        self, organization: str, page: int = 0, with_pagination: bool = False
+    ) -> RequestResponse:
         """
         Returns a paginated list of an organization’s pipelines.
 
@@ -32,7 +36,7 @@ class Pipelines(Client):
             with_pagination=with_pagination,
         )
 
-    def get_pipeline(self, organization, pipeline_name):
+    def get_pipeline(self, organization: str, pipeline_name: str) -> RequestResponse:
         """
         Get a pipeline
 
@@ -44,10 +48,10 @@ class Pipelines(Client):
 
     def create_pipeline(
         self,
-        organization,
-        pipeline_name,
-        git_repository,
-        build_steps=[
+        organization: str,
+        pipeline_name: str,
+        git_repository: str,
+        build_steps: list[dict[str, str]] = [
             dict(
                 type="script",
                 name=":pipeline:",
@@ -55,7 +59,7 @@ class Pipelines(Client):
             )
         ],
         team_uuids: list = None,
-    ):
+    ) -> RequestResponse:
         """
         Create a pipeline for organizations using Web Visual Steps.
         See `create_yaml_pipeline` if you've migrated to YAML pipelines.
@@ -81,12 +85,12 @@ class Pipelines(Client):
 
     def create_yaml_pipeline(
         self,
-        organization,
-        pipeline_name,
-        git_repository,
-        configuration,
+        organization: str,
+        pipeline_name: str,
+        git_repository: str,
+        configuration: str,
         team_uuids: list = None,
-    ):
+    ) -> RequestResponse:
         """
         Create a pipeline for organizations who have migrated to YAML pipelines
         https://buildkite.com/changelog/99-introducing-the-yaml-steps-editor
@@ -105,7 +109,7 @@ class Pipelines(Client):
         }
         return self.client.post(self.path.format(organization), body=data)
 
-    def delete_pipeline(self, organization, pipeline):
+    def delete_pipeline(self, organization: str, pipeline: str) -> RequestResponse:
         """
         Delete a pipeline
         :param organization: Organization slug
@@ -117,8 +121,8 @@ class Pipelines(Client):
 
     def update_pipeline(
         self,
-        organization,
-        pipeline,
+        organization: str,
+        pipeline: str,
         branch_configuration: str = None,
         cancel_running_branch_builds: bool = None,
         cancel_running_branch_builds_filter: str = None,
@@ -133,7 +137,7 @@ class Pipelines(Client):
         skip_queued_branch_builds: bool = None,
         skip_queued_branch_builds_filter: str = None,
         visibility: str = None,
-    ):
+    ) -> RequestResponse:
         """
         Patch a pipeline.
         See https://buildkite.com/docs/apis/rest-api/pipelines#update-a-pipeline

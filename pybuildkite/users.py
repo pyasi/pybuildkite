@@ -1,4 +1,4 @@
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Users(Client):
@@ -16,7 +16,7 @@ class Users(Client):
         self.client = client
         self.path = base_url + "user"
 
-    def get_current_user(self):
+    def get_current_user(self) -> RequestResponse:
         """
         Returns the current user
 

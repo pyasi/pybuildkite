@@ -55,19 +55,19 @@ def test_list_all_builds_multiple_build_states(fake_client):
 def test_build_state_must_be_list(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
     with pytest.raises(BuildStateNotAList):
-        builds.list_all(states=BuildState.RUNNING)
+        builds.list_all(states=BuildState.RUNNING)  # type: ignore[arg-type]
 
 
 def test_build_state_must_be_valid(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
     with pytest.raises(NotValidBuildState):
-        builds.list_all(states=["ran"])
+        builds.list_all(states=["ran"])  # type: ignore[list-item]
 
 
 def test_date_must_be_valid(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
     with pytest.raises(NotValidDateTime):
-        builds.list_all(created_from="2017-02-03")
+        builds.list_all(created_from="2017-02-03")  # type: ignore[arg-type]
 
 
 def test_correct_date_formats(fake_client):

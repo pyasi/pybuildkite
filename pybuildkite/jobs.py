@@ -1,7 +1,8 @@
 from enum import Enum
 from posixpath import join as urljoin
+from typing import Any
 
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class LogFormat(Enum):
@@ -13,7 +14,7 @@ class LogFormat(Enum):
     HTML = "text/html"
     JSON = "application/json"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
 
@@ -22,7 +23,7 @@ class Jobs(Client):
     Job operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -33,8 +34,13 @@ class Jobs(Client):
         self.path = urljoin(base_url, "organizations/{}/pipelines/{}/builds/{}/jobs/{}")
 
     def get_job_log(
-        self, organization, pipeline, build, job, log_format=LogFormat.HTML
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str | int,
+        log_format: str | LogFormat = LogFormat.HTML,
+    ) -> RequestResponse:
         """
         Get a job’s log output
 
@@ -45,13 +51,22 @@ class Jobs(Client):
         :param log_format: Mime type to return log in
         :return: Job log output
         """
-        header = {"Accept": str(log_format)}
+        if isinstance(log_format, str):
+            header = {"Accept": log_format}
+        else:
+            header = {"Accept": log_format.value}
         return self.client.get(
             self.path.format(organization, pipeline, build, job) + "/log",
             headers=header,
         )
 
-    def get_job_environment_variables(self, organization, pipeline, build, job):
+    def get_job_environment_variables(
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+    ) -> RequestResponse:
         """
         Get a job's environment variables
 
@@ -65,7 +80,13 @@ class Jobs(Client):
             self.path.format(organization, pipeline, build, job) + "/env"
         )
 
-    def retry_job(self, organization, pipeline, build, job):
+    def retry_job(
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+    ) -> RequestResponse:
         """
         Retries a failed or timed_out job.
          :param organization: Organization slug
@@ -79,7 +100,15 @@ class Jobs(Client):
             self.path.format(organization, pipeline, build, job) + retry
         )
 
-    def unblock_job(self, organization, pipeline, build, job, fields, unblocker=None):
+    def unblock_job(
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+        fields: Any,  # TODO: Bad Any.
+        unblocker: str = None,
+    ) -> RequestResponse:
         """
         Unblocks a build’s "Block pipeline" job.
         :param organization: Organization slug
@@ -96,7 +125,13 @@ class Jobs(Client):
             self.path.format(organization, pipeline, build, job) + unblock, body=body
         )
 
-    def delete_job_log(self, organization, pipeline, build, job):
+    def delete_job_log(
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        job: str,
+    ) -> RequestResponse:
         """
         Delete a job’s log output
         :param organization: organization slug

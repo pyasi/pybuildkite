@@ -1,4 +1,4 @@
-from pybuildkite.client import Client
+from pybuildkite.client import Client, RequestResponse
 
 
 class Annotations(Client):
@@ -6,7 +6,7 @@ class Annotations(Client):
     Annotation operations for the Buildkite API
     """
 
-    def __init__(self, client, base_url):
+    def __init__(self, client: Client, base_url: str) -> None:
         """
         Construct the class
 
@@ -17,8 +17,13 @@ class Annotations(Client):
         self.path = base_url + "organizations/{}/pipelines/{}/builds/{}/annotations/"
 
     def list_annotations(
-        self, organization, pipeline, build, page=0, with_pagination=False
-    ):
+        self,
+        organization: str,
+        pipeline: str,
+        build: int | str,
+        page: int = 0,
+        with_pagination: bool = False,
+    ) -> RequestResponse:
         """
         Returns a paginated list of the user’s annotations.
 
