@@ -55,6 +55,9 @@ class Pipelines(Client):
             )
         ],
         team_uuids: list = None,
+        branch_configuration: str = None,
+        default_branch: str = None,
+        provider_settings: dict = None,
     ):
         """
         Create a pipeline for organizations using Web Visual Steps.
@@ -68,6 +71,9 @@ class Pipelines(Client):
         :param pipeline_name:Pipeline slug
         :param git_repository: repo URL
         :param team_uuids: A list of team_uuids. This property is only available if your organization has enabled Teams.
+        :param branch_configuration: A branch filter pattern to limit which pushed branches or tags trigger builds on this pipeline.
+        :param default_branch: The name of the default branch in the repository you've specified.
+        :param provider_settings: A dictionary of provider-specific settings to configure.
         :return:
         """
         data = {
@@ -75,6 +81,9 @@ class Pipelines(Client):
             "repository": git_repository,
             "steps": build_steps,
             "team_uuids": team_uuids,
+            "branch_configuration": branch_configuration,
+            "default_branch": default_branch,
+            "provider_settings": provider_settings,
         }
 
         return self.client.post(self.path.format(organization), body=data)
@@ -86,6 +95,9 @@ class Pipelines(Client):
         git_repository,
         configuration,
         team_uuids: list = None,
+        branch_configuration: str = None,
+        default_branch: str = None,
+        provider_settings: dict = None,
     ):
         """
         Create a pipeline for organizations who have migrated to YAML pipelines
@@ -95,6 +107,9 @@ class Pipelines(Client):
         :param git_repository: repo URL
         :param configuration: a valid pipeline.yml
         :param team_uuids: A list of team_uuids. This property is only available if your organization has enabled Teams.
+        :param branch_configuration: A branch filter pattern to limit which pushed branches or tags trigger builds on this pipeline.
+        :param default_branch: The name of the default branch in the repository you've specified.
+        :param provider_settings: A dictionary of provider-specific settings to configure.
         :return:
         """
         data = {
@@ -102,6 +117,9 @@ class Pipelines(Client):
             "repository": git_repository,
             "configuration": configuration,
             "team_uuids": team_uuids,
+            "branch_configuration": branch_configuration,
+            "default_branch": default_branch,
+            "provider_settings": provider_settings,
         }
         return self.client.post(self.path.format(organization), body=data)
 

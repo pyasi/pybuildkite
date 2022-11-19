@@ -52,6 +52,9 @@ def test_create_pipeline(fake_client):
                 }
             ],
             "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": None,
         },
     )
 
@@ -72,6 +75,84 @@ def test_create_pipeline_with_teams(fake_client):
                 }
             ],
             "team_uuids": ["123"],
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_pipeline_with_branch_configuration(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_pipeline(
+        "test_org", "test_pipeline", "my_repo", branch_configuration="v*"
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "steps": [
+                {
+                    "type": "script",
+                    "name": ":pipeline:",
+                    "command": "buildkite-agent pipeline upload",
+                }
+            ],
+            "team_uuids": None,
+            "branch_configuration": "v*",
+            "default_branch": None,
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_pipeline_with_default_branch(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_pipeline(
+        "test_org", "test_pipeline", "my_repo", default_branch="main"
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "steps": [
+                {
+                    "type": "script",
+                    "name": ":pipeline:",
+                    "command": "buildkite-agent pipeline upload",
+                }
+            ],
+            "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": "main",
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_pipeline_with_provider_settings(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_pipeline(
+        "test_org", "test_pipeline", "my_repo", provider_settings={"build_tags": True}
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "steps": [
+                {
+                    "type": "script",
+                    "name": ":pipeline:",
+                    "command": "buildkite-agent pipeline upload",
+                }
+            ],
+            "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": {"build_tags": True},
         },
     )
 
@@ -88,6 +169,9 @@ def test_create_yaml_pipeline(fake_client):
             "repository": "my_repo",
             "configuration": "steps:\n  - command: ls",
             "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": None,
         },
     )
 
@@ -108,6 +192,78 @@ def test_create_yaml_pipeline_with_teams(fake_client):
             "repository": "my_repo",
             "configuration": "steps:\n  - command: ls",
             "team_uuids": ["123"],
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_yaml_pipeline_with_branch_configuration(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline(
+        "test_org",
+        "test_pipeline",
+        "my_repo",
+        "steps:\n  - command: ls",
+        branch_configuration="v*",
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
+            "team_uuids": None,
+            "branch_configuration": "v*",
+            "default_branch": None,
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_yaml_pipeline_with_default_branch(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline(
+        "test_org",
+        "test_pipeline",
+        "my_repo",
+        "steps:\n  - command: ls",
+        default_branch="main",
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
+            "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": "main",
+            "provider_settings": None,
+        },
+    )
+
+
+def test_create_yaml_pipeline_with_provider_settings(fake_client):
+    pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
+    pipeline.create_yaml_pipeline(
+        "test_org",
+        "test_pipeline",
+        "my_repo",
+        "steps:\n  - command: ls",
+        provider_settings={"build_tags": True},
+    )
+    fake_client.post.assert_called_with(
+        pipeline.path.format("test_org"),
+        body={
+            "name": "test_pipeline",
+            "repository": "my_repo",
+            "configuration": "steps:\n  - command: ls",
+            "team_uuids": None,
+            "branch_configuration": None,
+            "default_branch": None,
+            "provider_settings": {"build_tags": True},
         },
     )
 
