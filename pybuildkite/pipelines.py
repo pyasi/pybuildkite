@@ -132,7 +132,7 @@ class Pipelines(Client):
         """
         url = self.path.format(organization) + pipeline
         return self.client.delete(url)
-
+    
     def update_pipeline(
         self,
         organization,
@@ -184,7 +184,27 @@ class Pipelines(Client):
         }
         url = self.path.format(organization) + pipeline
         return self.client.patch(url, body=body)
-
+    
+    def archive_pipeline(self, organization, pipeline):
+        """
+        Archive a pipeline
+        :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :return:
+        """
+        url = self.path.format(organization) + pipeline + '/archive'
+        return self.client.post(url)
+    
+    def unarchive_pipeline(self, organization, pipeline):
+        """
+        Unarchive a pipeline
+        :param organization: Organization slug
+        :param pipeline: Pipeline slug
+        :return:
+        """
+        url = self.path.format(organization) + pipeline + '/unarchive'
+        return self.client.post(url)
+    
 
 class PipelineException(Exception):
     pass
