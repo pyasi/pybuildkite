@@ -192,7 +192,7 @@ class Pipelines(Client):
         :param pipeline: Pipeline slug
         :return:
         """
-        url = self.path.format(organization) + pipeline + '/archive'
+        url = self.path.format(organization) + pipeline + "/archive"
         return self.client.post(url)
     
     def unarchive_pipeline(self, organization, pipeline):
@@ -202,7 +202,7 @@ class Pipelines(Client):
         :param pipeline: Pipeline slug
         :return:
         """
-        url = self.path.format(organization) + pipeline + '/unarchive'
+        url = self.path.format(organization) + pipeline + "/unarchive"
         return self.client.post(url)
     
 
