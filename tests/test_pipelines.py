@@ -324,7 +324,7 @@ def test_archive_pipeline(fake_client):
         "test_org", "test_pipeline"
     )
     fake_client.post.assert_called_with(
-        pipeline.path.format("test_org", "test_pipeline") + "/archive"        
+        pipeline.path.format("test_org") + "test_pipeline" + "/archive"  
     )
 
 def test_unarchive_pipeline(fake_client):
@@ -333,5 +333,5 @@ def test_unarchive_pipeline(fake_client):
         "test_org", "test_pipeline"
     )
     fake_client.post.assert_called_with(
-        pipeline.path.format("test_org", "test_pipeline") + "/unarchive"
+        pipeline.path.format("test_org") + "test_pipeline" + "/unarchive"
     )
