@@ -20,6 +20,7 @@ class BuildState(Enum):
     RUNNING = "running"
     SCHEDULED = "scheduled"
     PASSED = "passed"
+    FAILING = "failing"
     FAILED = "failed"
     BLOCKED = "blocked"
     CANCELED = "canceled"
