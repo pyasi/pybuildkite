@@ -108,7 +108,7 @@ class Builds(Client):
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
-            "branch": branch,
+            "branch": self.__get_branches_query_param(branch),
             "commit": commit,
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
@@ -163,7 +163,7 @@ class Builds(Client):
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
-            "branch": branch,
+            "branch": self.__get_branches_query_param(branch),
             "commit": commit,
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
@@ -222,7 +222,7 @@ class Builds(Client):
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
             "state": self.__get_build_states_query_param(states),
-            "branch": branch,
+            "branch": self.__get_branches_query_param(branch),
             "commit": commit,
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
@@ -364,3 +364,16 @@ class Builds(Client):
             for state in states:
                 param_string += "state[]={}&".format(state.value)
             return param_string[:-1]
+
+    @staticmethod
+    def __get_branches_query_param(branches):
+        if not branches:
+            return None
+
+        if isinstance(branches, List):
+            param_string = ""
+            for branch in branches:
+                param_string += "branch[]={}&".format(branch)
+            return param_string[:-1]
+        else:
+            return "branch=" + branches
