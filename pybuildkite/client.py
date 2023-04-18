@@ -221,6 +221,8 @@ class Client(object):
                 query_string += "&"
             if key == "state":
                 query_string += value
+            elif key == "branch":
+                query_string += value
             else:
                 query_string += key + "=" + str(value)
         return query_string
