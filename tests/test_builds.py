@@ -216,3 +216,31 @@ def test_rebuild_build(fake_client):
         builds.path_for_build_number.format("org_slug", "pipeline_id", "build_number")
         + "/rebuild"
     )
+
+
+def test_multi_branch(fake_client):
+    builds = Builds(fake_client, "https://api.buildkite.com/v2/")
+    builds.rebuild_build("org_slug", "pipeline_id", "build_number")
+
+    builds.list_all_for_pipeline(
+        organization="org",
+        pipeline="pipe",
+        branch=["main", "master"]
+    )
+
+    args = fake_client.get.call_args[0][1]
+    assert args["branch"] == "branch[]=main&branch[]=master"
+
+
+def test_single_branch(fake_client):
+    builds = Builds(fake_client, "https://api.buildkite.com/v2/")
+    builds.rebuild_build("org_slug", "pipeline_id", "build_number")
+
+    builds.list_all_for_pipeline(
+        organization="org",
+        pipeline="pipe",
+        branch="main"
+    )
+
+    args = fake_client.get.call_args[0][1]
+    assert args["branch"] == "branch=main"
