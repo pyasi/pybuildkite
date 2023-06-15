@@ -21,6 +21,7 @@ class Agents(Client):
         self,
         organization,
         name=None,
+        query=None,
         hostname=None,
         version=None,
         page=0,
@@ -31,6 +32,7 @@ class Agents(Client):
 
         :param organization: Organization slug
         :param name: Filters the results by the given agent name
+        :param query: Filters the results by the given query
         :param hostname: Filters the results by the given hostname
         :param version: Filters the results by the given exact version number
         :param page: Int to determine which page to read from (See Pagination in README)
@@ -39,6 +41,7 @@ class Agents(Client):
         """
         query_params = {
             "name": name,
+            "q": query,
             "hostname": hostname,
             "version": version,
             "page": page,
