@@ -317,21 +317,19 @@ def test_update_pipeline_configuration_and_steps(fake_client):
             configuration="",
             steps={},
         )
-        
+
+
 def test_archive_pipeline(fake_client):
     pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
-    pipeline.archive_pipeline(
-        "test_org", "test_pipeline"
-    )
+    pipeline.archive_pipeline("test_org", "test_pipeline")
     fake_client.post.assert_called_with(
-        pipeline.path.format("test_org") + "test_pipeline" + "/archive"  
+        pipeline.path.format("test_org") + "test_pipeline" + "/archive"
     )
+
 
 def test_unarchive_pipeline(fake_client):
     pipeline = Pipelines(fake_client, "https://api.buildkite.com/v2/")
-    pipeline.unarchive_pipeline(
-        "test_org", "test_pipeline"
-    )
+    pipeline.unarchive_pipeline("test_org", "test_pipeline")
     fake_client.post.assert_called_with(
         pipeline.path.format("test_org") + "test_pipeline" + "/unarchive"
     )
