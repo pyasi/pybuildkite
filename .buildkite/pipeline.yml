@@ -1,24 +1,28 @@
 .docker-plugin: &docker-plugin
   plugins:
     - docker#v3.5.0:
-        image: "python:3.8"
+        image: 'python:3.8'
+
+.python-setup: &python-setup |-
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install .[dev]
 
 steps:
-
-  - label: ":python-black: Lint Black"
-    commands: 
-      - pip install -r requirements.txt
-      - black --check .
+  - label: ':python-black: Lint Black'
+    commands:
+      - *python-setup
+      - python3 -m black --check .
     <<: *docker-plugin
 
-  - label: ":mypy: Mypy"
-    commands: 
-      - pip install -r requirements.txt
-      - mypy .
+  - label: ':mypy: Mypy'
+    commands:
+      - *python-setup
+      - python3 -m mypy .
     <<: *docker-plugin
 
-  - label: ":pytest: Unit Tests"
-    commands: 
-      - pip install -r requirements.txt
-      - pytest
+  - label: ':pytest: Unit Tests'
+    commands:
+      - *python-setup
+      - python3 -m pytest
     <<: *docker-plugin
