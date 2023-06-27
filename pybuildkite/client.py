@@ -67,7 +67,9 @@ class Client(object):
             body = self._clean_query_params(body)
 
         query_params = self._clean_query_params(query_params or {})
-        query_params["per_page"] = "100"
+
+        if with_pagination:
+            query_params["per_page"] = "100"
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
