@@ -12,6 +12,7 @@ class Client(object):
         Create class
         """
         self.access_token = ""
+        self.session = requests.session()
 
     def is_access_token_set(self):
         """
@@ -70,7 +71,7 @@ class Client(object):
         query_params["per_page"] = "100"
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
-        response = requests.request(
+        response = self.session.request(
             method,
             url,
             headers=headers,
