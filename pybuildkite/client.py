@@ -34,7 +34,7 @@ class Client(object):
         url,
         query_params=None,
         body=None,
-        headers={},
+        headers=None,
         with_pagination=False,
         as_stream=False,
     ):
@@ -58,7 +58,7 @@ class Client(object):
         :return: response return as parsed json, bytes or bytes chunks iterator
         """
         if headers is None:
-            raise ValueError("headers cannot be None")
+            headers = {}
 
         if self.access_token:
             headers["Authorization"] = "Bearer {}".format(self.access_token)
@@ -108,7 +108,7 @@ class Client(object):
         return response_object
 
     def get(
-        self, url, query_params=None, headers={}, with_pagination=False, as_stream=False
+        self, url, query_params=None, headers=None, with_pagination=False, as_stream=False
     ):
         """
         Make a GET request to the API
@@ -131,7 +131,7 @@ class Client(object):
             as_stream=as_stream,
         )
 
-    def post(self, url, body=None, headers={}, query_params=None):
+    def post(self, url, body=None, headers=None, query_params=None):
         """
         Make a POST request to the API
 
@@ -148,7 +148,7 @@ class Client(object):
             "POST", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def put(self, url, body=None, headers={}, query_params=None):
+    def put(self, url, body=None, headers=None, query_params=None):
         """
         Make a PUT request to the API
 
@@ -165,7 +165,7 @@ class Client(object):
             "PUT", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def delete(self, url, body=None, headers={}, query_params=None):
+    def delete(self, url, body=None, headers=None, query_params=None):
         """
         Make a DELETE request to the API
 
@@ -182,7 +182,7 @@ class Client(object):
             "DELETE", url=url, query_params=query_params, body=body, headers=headers
         )
 
-    def patch(self, url, body=None, headers={}, query_params=None):
+    def patch(self, url, body=None, headers=None, query_params=None):
         """
         Make a PATCH request to the API
 
