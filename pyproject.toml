@@ -16,7 +16,7 @@ keywords = [
     "python",
 ]
 
-dependencies = ["requests==2.31.0"]
+dependencies = ["requests==2.32.0"]
 
 [project.optional-dependencies]
 dev = [
