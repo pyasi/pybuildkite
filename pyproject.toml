@@ -1,6 +1,6 @@
 [project]
 name = "pybuildkite"
-version = "1.2.3"
+version = "1.2.4"
 description = "Python wrapper for the Buildkite API"
 readme = "README.md"
 license = { file = "LICENSE" }
