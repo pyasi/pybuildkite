@@ -1,14 +1,12 @@
-from unittest.mock import Mock
+import datetime
 
 import pytest
-
-import datetime
 
 from pybuildkite.builds import Builds, BuildState
 from pybuildkite.exceptions import (
     BuildStateNotAList,
-    NotValidDateTime,
     NotValidBuildState,
+    NotValidDateTime,
 )
 
 
@@ -71,7 +69,6 @@ def test_date_must_be_valid(fake_client):
 
 
 def test_correct_date_formats(fake_client):
-
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")
 
     check_correct_dates(builds.list_all_for_org, fake_client, organization="org")
@@ -85,7 +82,7 @@ def check_correct_dates(func, fake_client, **kwargs):
     func(
         **kwargs,
         created_to=datetime.date(2020, 1, 2),
-        created_from=datetime.datetime(2020, 1, 1, 10, 10, 10)
+        created_from=datetime.datetime(2020, 1, 1, 10, 10, 10),
     )
     args = fake_client.get.call_args[0][1]
     assert args["created_from"] == "2020-01-01T10:10:10"
@@ -196,6 +193,7 @@ def test_create_build(fake_client):
             "pull_request_base_branch": None,
             "pull_request_id": None,
             "pull_request_repository": None,
+            "pull_request_labels": None,
         },
     )
 

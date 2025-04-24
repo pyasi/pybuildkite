@@ -4,9 +4,9 @@ from typing import List
 
 from pybuildkite.client import Client
 from pybuildkite.exceptions import (
+    BuildStateNotAList,
     NotValidBuildState,
     NotValidDateTime,
-    BuildStateNotAList,
 )
 
 
@@ -271,6 +271,7 @@ class Builds(Client):
         pull_request_base_branch=None,
         pull_request_id=None,
         pull_request_repository=None,
+        pull_request_labels=None,
     ):
         """
         Create a build
@@ -288,6 +289,7 @@ class Builds(Client):
         :param pull_request_base_branch: Base branch of a PR build
         :param pull_request_id: ID for a PR build
         :param pull_request_repository: Repository for a PR build
+        :param pull_request_labels: List of labels assigned to the pull request
         :return: The created build
         """
         body = {
@@ -302,6 +304,7 @@ class Builds(Client):
             "pull_request_base_branch": pull_request_base_branch,
             "pull_request_id": pull_request_id,
             "pull_request_repository": pull_request_repository,
+            "pull_request_labels": pull_request_labels,
         }
         return self.client.post(
             self.path_by_pipeline.format(organization, pipeline), body
