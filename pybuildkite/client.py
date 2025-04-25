@@ -219,12 +219,10 @@ class Client(object):
         for key, value in query_params.items():
             if query_string != "":
                 query_string += "&"
-            if key == "state":
-                query_string += value
-            elif key == "branch":
+            if key in ["state", "branch", "commit"]:
                 query_string += value
             else:
-                query_string += key + "=" + str(value)
+                query_string += f"{key}={str(value)}"
         return query_string
 
 

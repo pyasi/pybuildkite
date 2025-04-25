@@ -227,6 +227,25 @@ def test_multi_branch(fake_client):
     args = fake_client.get.call_args[0][1]
     assert args["branch"] == "branch[]=main&branch[]=master"
 
+@pytest.mark.parametrize(
+    "commit, result",
+    [
+        ("012abcdef", "commit=012abcdef"), # single item
+        (["012abcdef"], "commit=012abcdef"), # single item in an array
+        (["012abcdef", "013abcdef"], "commit[]=012abcdef&commit[]=013abcdef"), # multiple items
+    ]
+)
+def test_commit_query_param(fake_client, commit, result):
+    builds = Builds(fake_client, "https://api.buildkite.com/v2/")
+    builds.rebuild_build("org_slug", "pipeline_id", "build_number")
+
+    builds.list_all_for_pipeline(
+        organization="org", pipeline="pipe", commit=commit
+    )
+
+    args = fake_client.get.call_args[0][1]
+    assert args["commit"] == result
+
 
 def test_single_branch(fake_client):
     builds = Builds(fake_client, "https://api.buildkite.com/v2/")

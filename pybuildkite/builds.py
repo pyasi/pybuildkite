@@ -1,6 +1,6 @@
 import datetime
 from enum import Enum
-from typing import List
+from typing import List, Optional, Union
 
 from pybuildkite.client import Client
 from pybuildkite.exceptions import (
@@ -107,9 +107,9 @@ class Builds(Client):
             "created_from": self.__api_date_format(created_from),
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
-            "state": self.__get_build_states_query_param(states),
-            "branch": self.__get_branches_query_param(branch),
-            "commit": commit,
+            "state": self.__get_query_param("state", [s.value for s in states]),
+            "branch": self.__get_query_param("branch", branch),
+            "commit": self.__get_query_param("commit", commit),
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
         }
@@ -162,9 +162,9 @@ class Builds(Client):
             "created_from": self.__api_date_format(created_from),
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
-            "state": self.__get_build_states_query_param(states),
-            "branch": self.__get_branches_query_param(branch),
-            "commit": commit,
+            "state": self.__get_query_param("state", [s.value for s in states]),
+            "branch": self.__get_query_param("branch", branch),
+            "commit": self.__get_query_param("commit", commit),
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
         }
@@ -221,9 +221,9 @@ class Builds(Client):
             "created_from": self.__api_date_format(created_from),
             "created_to": self.__api_date_format(created_to),
             "finished_from": self.__api_date_format(finished_from),
-            "state": self.__get_build_states_query_param(states),
-            "branch": self.__get_branches_query_param(branch),
-            "commit": commit,
+            "state": self.__get_query_param("state", [s.value for s in states]),
+            "branch": self.__get_query_param("branch", branch),
+            "commit": self.__get_query_param("commit", commit),
             "include_retried_jobs": True if include_retried_jobs is True else None,
             "page": page,
         }
@@ -357,26 +357,14 @@ class Builds(Client):
                 raise NotValidBuildState
 
     @staticmethod
-    def __get_build_states_query_param(states):
-        if not states:
-            return None
-        if len(states) == 1:
-            return "state=" + states[0].value
-        else:
-            param_string = ""
-            for state in states:
-                param_string += "state[]={}&".format(state.value)
-            return param_string[:-1]
-
-    @staticmethod
-    def __get_branches_query_param(branches):
-        if not branches:
+    def __get_query_param(param_name: str, items: Union[str, list[str]]) -> Optional[str]:
+        if not items:
             return None
 
-        if isinstance(branches, List):
-            param_string = ""
-            for branch in branches:
-                param_string += "branch[]={}&".format(branch)
-            return param_string[:-1]
-        else:
-            return "branch=" + branches
+        if not isinstance(items, List):
+            return f"{param_name}={items}"
+
+        if len(items) == 1:
+            return f"{param_name}={items[0]}"
+
+        return "&".join(f"{param_name}[]={item}" for item in items)
