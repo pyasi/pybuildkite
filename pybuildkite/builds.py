@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
 from typing import List
+import urllib.parse
 
 from pybuildkite.client import Client
 from pybuildkite.exceptions import (
@@ -81,7 +82,7 @@ class Builds(Client):
         with_pagination=False,
     ):
         """
-        Returns a paginated list of all builds across all the user’s organizations and pipelines. If using
+        Returns a paginated list of all builds across all the user's organizations and pipelines. If using
         token-based authentication the list of builds will be for the authorized organizations only. Builds are
         listed in the order they were created (newest first).
 
@@ -93,11 +94,11 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data. Example: ?meta_data[some-key]=some-value
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
-        :param include_retried_jobs: Include all retried job executions in each build’s jobs list if True.
+        :param include_retried_jobs: Include all retried job executions in each build's jobs list if True.
                Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
-        :return: Returns a paginated list of all builds across all the user’s organizations and pipelines
+        :return: Returns a paginated list of all builds across all the user's organizations and pipelines
         """
         self.__validate_dates([created_from, created_to, finished_from])
         self.__are_valid_states(states)
@@ -135,7 +136,7 @@ class Builds(Client):
         with_pagination=False,
     ):
         """
-        Returns a paginated list of an organization’s builds across all of an organization’s pipelines. Builds are
+        Returns a paginated list of an organization's builds across all of an organization's pipelines. Builds are
         listed in the order they were created (newest first).
 
         :param organization: Organization slug
@@ -147,11 +148,11 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
-        :param include_retried_jobs: Include all retried job executions in each build’s jobs list if True.
+        :param include_retried_jobs: Include all retried job executions in each build's jobs list if True.
                Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
-        :return: Returns a paginated list of an organization’s builds across all of an organization’s pipelines.
+        :return: Returns a paginated list of an organization's builds across all of an organization's pipelines.
         """
 
         self.__validate_dates([created_from, created_to, finished_from])
@@ -193,7 +194,7 @@ class Builds(Client):
         with_pagination=False,
     ):
         """
-        Returns a paginated list of a pipeline’s builds. Builds are listed in the order they were created (newest
+        Returns a paginated list of a pipeline's builds. Builds are listed in the order they were created (newest
         first).
 
         :param organization: Organization slug
@@ -206,11 +207,11 @@ class Builds(Client):
         :param meta_data: Filters the results by the given meta_data.
         :param branch: Filters the results by the given branch or branches.
         :param commit: Filters the results by the commit (only works for full sha, not for shortened ones).
-        :param include_retried_jobs: Include all retried job executions in each build’s jobs list if True.
+        :param include_retried_jobs: Include all retried job executions in each build's jobs list if True.
                Without this parameter, you'll see only the most recently run job for each step.
         :param page: Int to determine which page to read from (See Pagination in README)
         :param with_pagination: Bool to return a response with pagination attributes
-        :return: Returns a paginated list of a pipeline’s builds.
+        :return: Returns a paginated list of a pipeline's builds.
         """
 
         self.__validate_dates([created_from, created_to, finished_from])
@@ -244,7 +245,7 @@ class Builds(Client):
         :param organization: Organization slug
         :param pipeline: Pipeline slug
         :param build_number: Build number
-        :param include_retried_jobs: Include all retried job executions in each build’s jobs list if True.
+        :param include_retried_jobs: Include all retried job executions in each build's jobs list if True.
                Without this parameter, you'll see only the most recently run job for each step.
         :return: A build
         """
@@ -376,7 +377,9 @@ class Builds(Client):
         if isinstance(branches, List):
             param_string = ""
             for branch in branches:
-                param_string += "branch[]={}&".format(branch)
+                encoded_branch = urllib.parse.quote_plus(branch)
+                param_string += f"branch[]={{}}&".format(encoded_branch)
             return param_string[:-1]
         else:
-            return "branch=" + branches
+            encoded_branch = urllib.parse.quote_plus(branches)
+            return f"branch={{}}".format(encoded_branch)

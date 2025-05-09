@@ -236,3 +236,12 @@ def test_single_branch(fake_client):
 
     args = fake_client.get.call_args[0][1]
     assert args["branch"] == "branch=main"
+
+
+def test_branch_with_special_characters(fake_client):
+    builds = Builds(fake_client, "https://api.buildkite.com/v2/")
+    branch_name = "feature#123"
+    builds.list_all_for_pipeline(organization="org", pipeline="pipe", branch=branch_name)
+    args = fake_client.get.call_args[0][1]
+    # '#' should be encoded as '%23'
+    assert args["branch"] == "branch=feature%23123"
