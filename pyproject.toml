@@ -1,6 +1,6 @@
 [project]
 name = "pybuildkite"
-version = "1.2.5"
+version = "1.2.6"
 description = "Python wrapper for the Buildkite API"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -16,7 +16,7 @@ keywords = [
     "python",
 ]
 
-dependencies = ["requests==2.32.0"]
+dependencies = ["requests>=2.32.2"]
 
 [project.optional-dependencies]
 dev = [
