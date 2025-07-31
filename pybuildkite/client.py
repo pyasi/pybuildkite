@@ -7,11 +7,14 @@ class Client(object):
     Internal API Client
     """
 
-    def __init__(self):
+    def __init__(self, per_page=100):
         """
         Create class
+        
+        :param per_page: Number of items per page for API requests (default: 100)
         """
         self.access_token = ""
+        self.per_page = per_page
 
     def is_access_token_set(self):
         """
@@ -67,7 +70,7 @@ class Client(object):
             body = self._clean_query_params(body)
 
         query_params = self._clean_query_params(query_params or {})
-        query_params["per_page"] = "100"
+        query_params["per_page"] = str(self.per_page)
 
         query_params = self._convert_query_params_to_string_for_bytes(query_params)
         response = requests.request(
