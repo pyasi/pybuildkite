@@ -34,9 +34,21 @@ buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master',
 clean_checkout=True, message="My First Build!")
 ```
 
+## Per-Page Configuration
+
+The `per_page` parameter controls the number of items returned per API request. This can be useful for organizations with large datasets that experience timeouts.
+
+```python
+# Default behavior (100 items per page)
+buildkite = Buildkite()
+
+# Custom per_page for smaller responses (useful for large organizations)
+buildkite = Buildkite(per_page=25)
+```
+
 ## Pagination
 
-Buildkite offers pagination for endpoints that return a lot of data. By default this wrapper return `100` objects. However, any request that may contain more than that offers a pagination option.
+Buildkite offers pagination for endpoints that return a lot of data. By default this wrapper returns `100` objects per page. However, any request that may contain more than that offers a pagination option.
 
 When `with_pagination=True`, we return a response object with properties that may have `next_page`, `last_page`, `previous_page`, or `first_page` depending on what page you're on.
 

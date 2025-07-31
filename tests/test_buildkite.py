@@ -34,6 +34,24 @@ def test_access_token_set():
     assert buildkite.agents()
 
 
+def test_buildkite_with_custom_per_page():
+    """
+    Test that Buildkite class accepts and uses custom per_page parameter
+    """
+    buildkite = Buildkite(per_page=50)
+    buildkite.set_access_token("FAKE-ACCESS-TOKEN")
+    assert buildkite.client.per_page == 50
+    assert buildkite.agents()
+
+
+def test_buildkite_default_per_page():
+    """
+    Test that Buildkite class uses default per_page value
+    """
+    buildkite = Buildkite()
+    assert buildkite.client.per_page == 100
+
+
 @pytest.mark.parametrize(
     "function, expected_type",
     [

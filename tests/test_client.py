@@ -19,6 +19,37 @@ class TestClient:
         client.set_client_access_token("FAKE-TOKEN")
         assert client.is_access_token_set()
 
+    def test_per_page_parameter(self):
+        """
+        Test that per_page parameter is properly set and used
+        """
+        client = Client(per_page=50)
+        assert client.per_page == 50
+        
+        # Test default value
+        client_default = Client()
+        assert client_default.per_page == 100
+
+    def test_request_with_custom_per_page(self):
+        """
+        Test that custom per_page value is used in requests
+        """
+        fake_client = Client(per_page=25)
+
+        with patch("requests.request") as request:
+            request.return_value.json.return_value = {}
+
+            fake_client.request("GET", "http://www.google.com/")
+
+        request.assert_called_once_with(
+            "GET",
+            "http://www.google.com/",
+            headers={},
+            json=None,
+            params=b"per_page=25",
+            stream=False,
+        )
+
     def test_clean_query_params(self):
         """
         Test that params with None are cleaned
