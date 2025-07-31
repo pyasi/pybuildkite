@@ -32,11 +32,6 @@ builds = buildkite.builds().list_all_for_pipeline('my-org', 'my-pipeline', state
 # Create a build
 buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master', 
 clean_checkout=True, message="My First Build!")
-
-# For organizations with large datasets that experience timeouts, reduce the per_page parameter
-buildkite_small = Buildkite(per_page=25)  # Default is 100
-buildkite_small.set_access_token('YOUR_API_ACCESS_TOKEN_HERE')
-builds = buildkite_small.builds().list_all_for_org('my-org')
 ```
 
 ## Per-Page Configuration
@@ -49,9 +44,6 @@ buildkite = Buildkite()
 
 # Custom per_page for smaller responses (useful for large organizations)
 buildkite = Buildkite(per_page=25)
-
-# Very small per_page for testing or very large datasets
-buildkite = Buildkite(per_page=10)
 ```
 
 ## Pagination
