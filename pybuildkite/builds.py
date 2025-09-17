@@ -345,7 +345,7 @@ class Builds(Client):
     def __api_date_format(datetime):
         if datetime is None:
             return None
-        return datetime.isoformat()
+        return datetime.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     @staticmethod
     def __are_valid_states(states):
