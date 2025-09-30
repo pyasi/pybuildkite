@@ -1,6 +1,6 @@
 # PyBuildkite
 
-[![Build status](https://badge.buildkite.com/89bf10df4492f2f2d61ca707078828824fec3b08cb85192e6d.svg)](https://buildkite.com/pybuildkite/pybuildkite)
+[![Build status](https://github.com/pyasi/pybuildkite/actions/workflows/python-publish.yml/badge.svg)](https://github.com/pyasi/pybuildkite/actions/workflows/python-publish.yml)
 [![Coverage Status](https://coveralls.io/repos/github/pyasi/pybuildkite/badge.svg?branch=master)](https://coveralls.io/github/pyasi/pybuildkite?branch=master)
 [![PyPI most recent version](https://badge.fury.io/py/pybuildkite.svg)](https://pypi.org/project/pybuildkite/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/pybuildkite.svg)](https://pypi.org/project/pybuildkite/)
