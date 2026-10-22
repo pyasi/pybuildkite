@@ -6,7 +6,8 @@ def requires_token(func: Callable):
     """
     This annotation protects API calls that require authentication.
 
-    It will cause them to raise NoAcccessTokenException if the token is not set in the client.
+    It raises NoAcccessTokenException if neither an access token nor a Requests
+    authentication object is configured in the client.
 
     :return: Function decorated with the protection
     """
@@ -19,10 +20,10 @@ def requires_token(func: Callable):
         :param args: Optional
         :param kwargs: Optional
 
-        :raises NoAcccessTokenException: If no access token is set
+        :raises NoAcccessTokenException: If no authentication is configured
         :return:
         """
-        if not self.client.is_access_token_set():
+        if not self.client._is_authentication_configured():
             raise NoAcccessTokenException
         else:
             return func(self, *args, **kwargs)

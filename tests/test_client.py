@@ -25,7 +25,7 @@ class TestClient:
         """
         client = Client(per_page=50)
         assert client.per_page == 50
-        
+
         # Test default value
         client_default = Client()
         assert client_default.per_page == 100
@@ -48,6 +48,7 @@ class TestClient:
             json=None,
             params=b"per_page=25",
             stream=False,
+            auth=None,
         )
 
     def test_clean_query_params(self):
@@ -133,6 +134,7 @@ class TestClientRequest:
             json=None,
             params=b"per_page=100",
             stream=False,
+            auth=None,
         )
 
     def test_request_should_return_bytes_when_non_json_accept_header_provided(self):
@@ -158,6 +160,7 @@ class TestClientRequest:
             json=None,
             params=expected_params,
             stream=False,
+            auth=None,
         )
 
         assert resp == b"response text"
@@ -191,6 +194,7 @@ class TestClientRequest:
             json=None,
             params=expected_params,
             stream=True,
+            auth=None,
         )
         request.return_value.iter_content.assert_called_once_with(
             chunk_size=None, decode_unicode=False
@@ -220,6 +224,7 @@ class TestClientRequest:
             json=None,
             params=expected_params,
             stream=False,
+            auth=None,
         )
 
         assert resp == {"key": "value"}
@@ -244,6 +249,7 @@ class TestClientRequest:
             json=None,
             params=expected_params,
             stream=False,
+            auth=None,
         )
 
         assert resp == {"key": "value"}
@@ -269,6 +275,7 @@ class TestClientRequest:
             json=None,
             params=expected_params,
             stream=False,
+            auth=None,
         )
 
         assert resp == {"key": "value"}
