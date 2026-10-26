@@ -19,13 +19,14 @@ class Buildkite(object):
     Public API for Buildkite
     """
 
-    def __init__(self, per_page=100):
+    def __init__(self, per_page=100, auth=None):
         """
         Create a new client
-        
+
         :param per_page: Number of items per page for API requests (default: 100)
+        :param auth: Optional Requests authentication object. An explicit access token takes precedence.
         """
-        self.client = Client(per_page)
+        self.client = Client(per_page, auth)
         self.base_url = "https://api.buildkite.com/v2/"
 
     def set_access_token(self, access_token):

@@ -34,6 +34,35 @@ buildkite.builds().create_build('my-org', 'my-pipeline', 'COMMITSHA', 'master',
 clean_checkout=True, message="My First Build!")
 ```
 
+## Custom authentication
+
+Pass a [Requests authentication object](https://requests.readthedocs.io/en/latest/user/authentication/#new-forms-of-authentication)
+when credentials can change during the lifetime of a client. Requests calls the
+object while preparing each API request, so it can obtain a current credential.
+The authentication object owns token acquisition and caching.
+
+```python
+from requests.auth import AuthBase
+from pybuildkite.buildkite import Buildkite
+
+
+class BearerAuth(AuthBase):
+    def __init__(self, token_provider):
+        self.token_provider = token_provider
+
+    def __call__(self, r):
+        r.headers["Authorization"] = "Bearer " + self.token_provider()
+        return r
+
+
+buildkite = Buildkite(auth=BearerAuth(get_current_token))
+```
+
+Here, `get_current_token` is an application-provided callable that returns a
+current token. `set_access_token` takes precedence over `auth`; setting the
+access token to an empty string enables the authentication object again.
+PyBuildkite does not add retries when an authentication object is configured.
+
 ## Per-Page Configuration
 
 The `per_page` parameter controls the number of items returned per API request. This can be useful for organizations with large datasets that experience timeouts.

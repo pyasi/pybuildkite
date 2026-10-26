@@ -7,14 +7,16 @@ class Client(object):
     Internal API Client
     """
 
-    def __init__(self, per_page=100):
+    def __init__(self, per_page=100, auth=None):
         """
         Create class
-        
+
         :param per_page: Number of items per page for API requests (default: 100)
+        :param auth: Optional Requests authentication object. An explicit access token takes precedence.
         """
         self.access_token = ""
         self.per_page = per_page
+        self.auth = auth
 
     def is_access_token_set(self):
         """
@@ -23,6 +25,10 @@ class Client(object):
         :return: true or false
         """
         return not self.access_token == ""
+
+    def _is_authentication_configured(self):
+        """Has this client got an access token or Requests auth object?"""
+        return self.is_access_token_set() or self.auth is not None
 
     def set_client_access_token(self, access_token):
         """
@@ -80,6 +86,7 @@ class Client(object):
             params=str.encode(query_params),
             json=body,
             stream=as_stream,
+            auth=self.auth if not self.access_token else None,
         )
 
         response.raise_for_status()
@@ -111,7 +118,12 @@ class Client(object):
         return response_object
 
     def get(
-        self, url, query_params=None, headers=None, with_pagination=False, as_stream=False
+        self,
+        url,
+        query_params=None,
+        headers=None,
+        with_pagination=False,
+        as_stream=False,
     ):
         """
         Make a GET request to the API
